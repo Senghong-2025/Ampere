@@ -1,0 +1,22 @@
+:root {
+    --primary: #0768e4;
+    --secondary: #20272d;
+    --accent: #08c20b;
+    --danger: #e63946;
+    --warning: #ffb703;
+    --info: #219ebc;
+    --light: #f8f9fa;
+    --dark: #013056;
+    --bg1: #FFFFFF;
+    --text1: #0F0F0F;
+    --bg2: #010124;
+    --text2: #FCFCFC;
+    --title: 16px;
+    --fs1: 12px;
+}
+
+body {
+    background-color: var(--bg1);
+    font-size: var(--fs1);
+    color: var(--text1);
+}
