@@ -1,7 +1,8 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
   const firebaseConfig = {
     apiKey: "AIzaSyBsV5zdzZ6zOyXPdiW-1gCvhVakrPRY7BI",
     authDomain: "ampere-53461.firebaseapp.com",
@@ -12,13 +13,14 @@ export default defineNuxtPlugin((nuxtApp) => {
     measurementId: "G-BR9DZ1515M"
   };
 
-  const app = initializeApp(firebaseConfig);
-
-  let analytics: ReturnType<typeof getAnalytics> | null = null;
-  if (import.meta.client) {
-    analytics = getAnalytics(app);
-  }
+  const app = initializeApp(firebaseConfig)
+  const auth = getAuth(app)
+  const db = getFirestore(app)
   
-  nuxtApp.provide("firebaseApp", app);
-  nuxtApp.provide("firebaseAnalytics", analytics);
+  return {
+    provide: {
+      auth,
+      db
+    }
+  }
 });
