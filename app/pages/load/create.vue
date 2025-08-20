@@ -20,10 +20,9 @@
                     </select>
                 </div>
             </div>
-            <div class="flex flex-wrap w-full gap-2">
-                <!-- <pre>{{ loadList }}</pre> -->
+            <div class="flex flex-wrap w-full gap-2 px-2">
                 <div v-for="(val, index) in filteredRoomsByHome" :key="index" class="flex items-center gap-1">
-                   <input type="checkbox" :value="val.roomNumber" :checked="loadList.some(item => item.roomNumber === val.roomNumber)"> <span>{{ val.roomNumber }}</span>
+                   <input type="checkbox" :value="val.roomNumber" disabled :checked="loadList.some(item => item.roomNumber === val.roomNumber)"> <span>{{ val.roomNumber }}</span>
                 </div>
             </div>
             <div class="input-form">
