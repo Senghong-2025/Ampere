@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-gray-300">
+  <div class="w-full bg-gray-300 relative">
     <TheHeader />
     <div class="min-h-screen w-full overflow-y-auto">
       <NuxtPage />

@@ -1,13 +1,6 @@
 <template>
-    <div class="mx-auto p-6">
-        <div class="w-full bg-red-700/50 rounded-sm items-center flex mb-2 py-4 px-2 text-gray-100">
-            <div>
-                <h2 class="text-2xl font-semibold">Room List</h2>
-            </div>
-            <div>
-                <!-- <button></button> -->
-            </div>
-        </div>
+    <div class="mx-auto max-w-3xl p-6">
+        <FormHeader title="Room List"/>
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
             <table class="w-full border-collapse">
                 <thead>
@@ -24,8 +17,7 @@
                         <td class="px-6 py-4 border-b border-gray-200 text-gray-700">
                             <div class="flex flex-wrap gap-2">
                                 <div v-for="(m, index) in room.members" :key="index">
-                                    <div class="text-blue-500" :class="[{ 'after:content-[\',\']': index !== room.members.length - 1 }]">{{ m }}
-                                    </div>
+                                    <div class="text-blue-500">{{ m }}<span v-if="index !== room.members.length - 1">,</span></div>
                                 </div>
                             </div>
                         </td>
@@ -37,6 +29,6 @@
 </template>
 
 <script lang="ts" setup>
-
 import { rooms } from '~/assets/data/room';
+import FormHeader from '~/components/FormHeader.vue';
 </script>
