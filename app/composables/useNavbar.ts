@@ -29,7 +29,25 @@ function useNavbar() {
     // },
   ];
 
-  return { navbars };
+  const loadRoutes: INavbar[] = [
+    {
+      name: "Load",
+      path: "/load",
+      isEnabled: true
+    },
+    {
+      name: "Load Details",
+      path: "/load/details",
+      isEnabled: true
+    },
+    {
+      name: "Create",
+      path: "/load/create",
+      isEnabled: true
+    }
+  ];
+
+  return { navbars, loadRoutes };
 }
 
 export default useNavbar;

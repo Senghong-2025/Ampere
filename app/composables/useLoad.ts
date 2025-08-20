@@ -1,7 +1,8 @@
-import type { ICreateLoadRequest } from "~/models/load";
+import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { getMonthAndYearOnly } from "~/helpers/dateTimeHelper";
+import { formatInputDateTime, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
+import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
     const { $db } = useNuxtApp();
     const homes = Array.from(new Set(rooms.map(room => room.homeId)));
@@ -9,13 +10,16 @@ const useLoad = () => {
     const selectedHome = ref(homes[0]);
     const selectedFloor = ref(floors[0]);
     const filteredRooms = computed(() => rooms.filter(room => room.floor === selectedFloor.value));
+    const filteredRoomsByHome = computed(() => {
+        return rooms.filter(room => room.homeId === Number(selectedHome.value));
+    });
 
     const isLoading = ref(false);
     const model = reactive<ICreateLoadRequest>({
         roomNumber: 0,
         currentKW: 0,
-        createdOn: String(new Date()),
-        modifiedOn: String(new Date()),
+        createdOn: formatInputDateTime(new Date()),
+        modifiedOn: formatInputDateTime(new Date()),
         homeId: 0
     });
     const handleSubmit = async () => {
@@ -24,8 +28,8 @@ const useLoad = () => {
             homeId: Number(selectedHome.value),
             roomNumber: model.roomNumber,
             currentKW: model.currentKW,
-            createdOn: String(new Date()),
-            modifiedOn: String(new Date())
+            createdOn: model.createdOn,
+            modifiedOn: formatInputDateTime(new Date())
         };
         const q = query(
             collection($db, "load"),
@@ -33,19 +37,38 @@ const useLoad = () => {
         );
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => doc.data());
-        const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date())));
+        const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date(model.createdOn))));
         if(existingValue.value) {
             isLoading.value = false;
+            notifyHelper.error("This already existing data");
             return;
         };
         try {
             await addDoc(collection($db, "load"), request);
+            notifyHelper.success("Load created successfully.");
             model.roomNumber = 0;
             model.currentKW = 0;
+            getLoadListByMonth();
         } catch (error) {
             console.error("Error creating load:", error);
         } finally {
             isLoading.value = false;
+        }
+    };
+
+    const loadList = ref<ILoadResponse[]>([]);
+    const getLoadListByMonth = async () => {
+        console.log('sdfsdf', selectedHome.value, new Date())
+        try {
+            const q = query(
+                collection($db, "load"),
+                where("homeId", "==", Number(selectedHome.value))
+            );
+            const snapshot = await getDocs(q);
+            const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === getMonthOnly(new Date(model.createdOn)));
+            loadList.value = dataByMonth.map(doc => doc.data() as ILoadResponse);
+        } catch (error) {
+            console.error("Error fetching load list:", error);
         }
     };
     return {
@@ -56,7 +79,10 @@ const useLoad = () => {
         homes,
         selectedHome,
         selectedFloor,
-        filteredRooms
+        filteredRooms,
+        getLoadListByMonth,
+        loadList,
+        filteredRoomsByHome,
     }
 };
 
