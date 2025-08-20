@@ -1,10 +1,16 @@
 export interface ILoad {
   id: number;
   homeId: number;
-  date: string; // e.g., "2025-08-19"
+  date: string;
   data: ILoadData[];
 }
-
+export interface ICreateLoadRequest {
+  roomNumber: number;
+  currentKW: number;
+  image?: string;
+  createdOn: string;
+  modifiedOn: string;
+}
 export interface ILoadData {
   roomNumber: number;       // Room identifier
   roomName: string;         // Optional: Room name

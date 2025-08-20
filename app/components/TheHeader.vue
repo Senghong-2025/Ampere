@@ -7,9 +7,9 @@
       <p class="text-red-600 text-[20px] font-medium">Ampere</p>
     </div>
     <div>
-      <div class="flex gap-2 w-full justify-end px-4">
+      <div class="flex gap-2 w-full justify-end px-4 overflow-x-auto">
         <nuxt-link v-for="(nav, index) in navbars" :key="index" :to="nav.isEnabled ? nav.path : '/'">
-          <div class="bg-gray-500/50 px-2 rounded-sm text-white py-2">
+          <div class="bg-gray-500/50 px-2 rounded-sm py-2" :class="[$route.path === nav.path ? 'text-red-500': 'text-white']">
             {{ nav.name }}
           </div>
         </nuxt-link>
@@ -18,7 +18,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-
+// import { Plus } from '@element-plus/icons-vue';
 const { navbars } = useNavbar();
 </script>
 

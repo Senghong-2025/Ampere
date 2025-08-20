@@ -3,5 +3,6 @@ export interface IRoom {
     roomNumber: number
     name: string
     homeId: number
+    floor: number
     members: string[]
 }

@@ -13,20 +13,20 @@ function useNavbar() {
       isEnabled: true
     },
     {
-      name: "Load Calculation",
+      name: "Load",
       path: "/load",
       isEnabled: true
     },
-    {
-      name: "Cable Sizing",
-      path: "/cable-sizing",
-      isEnabled: false
-    },
-    {
-      name: "Voltage Drop",
-      path: "/voltage-drop",
-      isEnabled: false
-    },
+    // {
+    //   name: "Cable Sizing",
+    //   path: "/cable-sizing",
+    //   isEnabled: false
+    // },
+    // {
+    //   name: "Voltage Drop",
+    //   path: "/voltage-drop",
+    //   isEnabled: false
+    // },
   ];
 
   return { navbars };

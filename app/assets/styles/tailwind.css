@@ -1,0 +1,23 @@
+/* Add table styles */
+table {
+    @apply w-full border-collapse min-w-[600px];
+}
+thead tr {
+    @apply border-gray-400 bg-gray-200;
+}
+tbody tr {
+    @apply hover:bg-gray-100 transition-colors;
+}
+td {
+    @apply px-6 py-4 border-b border-gray-200 text-gray-700;
+}
+th {
+    @apply px-6 py-4 text-left text-sm font-medium text-gray-600;
+}
+
+.input-form {
+    @apply border border-gray-300 rounded-md p-2 bg-gray-300 flex flex-col;
+}
+.input-form input, .input-form select {
+    @apply border-1 border-blue-600 rounded-md px-2 bg-transparent focus:outline-none h-[40px];
+}
