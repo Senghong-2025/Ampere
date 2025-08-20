@@ -5,6 +5,7 @@ export interface ILoad {
   data: ILoadData[];
 }
 export interface ICreateLoadRequest {
+  homeId: number;
   roomNumber: number;
   currentKW: number;
   image?: string;

@@ -1,5 +1,5 @@
 export interface IRoom {
-    roomId: number
+    id: number
     roomNumber: number
     name: string
     homeId: number

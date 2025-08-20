@@ -23,24 +23,24 @@
         <div class="overflow-x-auto bg-white rounded-lg shadow-md">
             <table>
                 <thead>
-                    <tr>
-                        <th>Room Number</th>
-                        <th>Floor</th>
+                    <tr>    
+                        <th width="120">Room Number</th>
+                        <th width="60">Floor</th>
                         <th>Room Name</th>
                         <th>Members</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(room, index) in filteredRooms" :key="index">
-                        <td>{{ room.roomNumber }}</td>
-                        <td>{{ room.floor }}</td>
+                        <td align="center">{{ room.roomNumber }}</td>
+                        <td align="center">{{ room.floor }}</td>
                         <td>{{ room.name }}</td>
                         <td>
                             <div class="flex flex-wrap gap-2">
-                                <div v-for="(m, index) in room.members" :key="index">
+                                <div v-for="(m, index2) in room.members" :key="index2">
                                     <div class="text-blue-500">
                                         <span>{{ m }}</span>
-                                        <span v-if="index !== room.members.length - 1">,</span>
+                                        <span v-if="index2 !== room.members.length - 1">,</span>
                                     </div>
                                 </div>
                             </div>

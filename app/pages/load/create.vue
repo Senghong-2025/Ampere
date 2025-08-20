@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto max-w-3xl p-2 md:p-6">
         <FormHeader title="Create Load" />
-        <form @submit.prevent="handleSubmit">
+        <form class="bg-gray-200 p-2 rounded-sm" @submit.prevent="handleSubmit">
             <div class="w-full flex gap-2">
                 <div class="input-form w-full">
                     <label for="home">Home</label>
@@ -20,7 +20,7 @@
                 <label for="roomNumber">Room Number</label>
                 <select id="roomNumber" v-model="model.roomNumber" name="roomNumber" required>
                     <option value="">select room</option>
-                    <option v-for="value in filteredRooms" :key="value.roomId" :value="value.roomNumber">{{ value.name }}
+                    <option v-for="value in filteredRooms" :key="value.id" :value="value.roomNumber">{{ value.name }}
                     </option>
                 </select>
             </div>
@@ -29,7 +29,7 @@
                 <input id="currentKW" v-model="model.currentKW" type="number" name="currentKW" required>
             </div>
             <div class="flex justify-center">
-                <TheButton1 name="Save" type="primary" />
+                <TheButton1 name="Save" type="primary" :loading="isLoading" />
             </div>
         </form>
     </div>
@@ -44,6 +44,7 @@ const {
     homes,
     selectedHome,
     selectedFloor,
-    filteredRooms
+    filteredRooms,
+    isLoading,
  } = useLoad();
 </script>

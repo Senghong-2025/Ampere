@@ -9,14 +9,19 @@ const useLoad = () => {
     const selectedHome = ref(homes[0]);
     const selectedFloor = ref(floors[0]);
     const filteredRooms = computed(() => rooms.filter(room => room.floor === selectedFloor.value));
+
+    const isLoading = ref(false);
     const model = reactive<ICreateLoadRequest>({
         roomNumber: 0,
         currentKW: 0,
         createdOn: String(new Date()),
-        modifiedOn: String(new Date())
+        modifiedOn: String(new Date()),
+        homeId: 0
     });
     const handleSubmit = async () => {
+        isLoading.value = true;
         const request: ICreateLoadRequest = {
+            homeId: Number(selectedHome.value),
             roomNumber: model.roomNumber,
             currentKW: model.currentKW,
             createdOn: String(new Date()),
@@ -30,19 +35,23 @@ const useLoad = () => {
         const data = snapshot.docs.map(doc => doc.data());
         const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date())));
         if(existingValue.value) {
-            alert('data already exists')
+            isLoading.value = false;
             return;
         };
         try {
-            const response = await addDoc(collection($db, "load"), request);
-            console.log("Load created successfully:", response);
+            await addDoc(collection($db, "load"), request);
+            model.roomNumber = 0;
+            model.currentKW = 0;
         } catch (error) {
             console.error("Error creating load:", error);
+        } finally {
+            isLoading.value = false;
         }
     };
     return {
         model,
         handleSubmit,
+        isLoading,
         floors,
         homes,
         selectedHome,

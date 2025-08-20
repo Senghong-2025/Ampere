@@ -1,11 +1,30 @@
 <template>
     <div>
-        <button
-            :class="buttonClasses"
-            class="cursor-pointer"
-            @click="$emit('click')"
-        >
-            {{ name }}
+        <button :class="buttonClasses" class="cursor-pointer" :disabled="loading" @click="$emit('click')">
+            <div class="flex items-center gap-2">
+                <svg
+                    v-if="loading"
+                    class="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                >
+                    <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                    />
+                    <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
+                </svg>
+                <span>{{ loading ? 'Loading...' : name }}</span>
+            </div>
         </button>
     </div>
 </template>
@@ -16,6 +35,7 @@ type ButtonType = 'primary' | 'secondary' | 'tertiary' | 'quaternary';
 const props = defineProps<{
     name: string;
     type: ButtonType;
+    loading?: boolean;
 }>();
 
 defineEmits<{
