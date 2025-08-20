@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto max-w-3xl p-2 md:p-6">
+    <div class="mx-auto max-w-3xl">
         <FormHeader title="Update Load" />
         <form v-loading="isLoading" class="bg-gray-200 p-2 rounded-sm" @submit.prevent="updateLoad($route.query.id as string)">
             <div class="input-form">

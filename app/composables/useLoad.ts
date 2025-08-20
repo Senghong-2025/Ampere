@@ -57,7 +57,7 @@ const useLoad = () => {
     };
 
     const loadList = ref<ILoadResponse[]>([]);
-    const getLoadListByMonth = async () => {
+    const getLoadListByMonth = async (month?: string, isDefault: boolean = true) => {
         isLoading.value = true;
         try {
             const q = query(
@@ -65,7 +65,7 @@ const useLoad = () => {
                 where("homeId", "==", Number(selectedHome.value))
             );
             const snapshot = await getDocs(q);
-            const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === getMonthOnly(new Date(model.createdOn)));
+            const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === ( !isDefault ? month : getMonthOnly(new Date(model.createdOn))));
             loadList.value = dataByMonth.map(doc => {
                 const data = doc.data() as ILoadResponse;
                 return {
@@ -73,6 +73,7 @@ const useLoad = () => {
                     id: doc.id ?? ''
                 };
             });
+            return loadList.value;
         } catch (error) {
             console.error("Error fetching load list:", error);
         } finally {

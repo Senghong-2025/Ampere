@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto max-w-3xl p-2 md:p-6">
+    <div class="mx-auto max-w-3xl">
         <FormHeader title="Create Load" />
         <form class="bg-gray-200 p-2 rounded-sm" @submit.prevent="handleSubmit">
             <div class="input-form">
@@ -28,7 +28,7 @@
             <div class="input-form">
                 <label for="roomNumber">Room Number</label>
                 <select id="roomNumber" v-model="model.roomNumber" name="roomNumber" required>
-                    <option value="">select room</option>
+                    <option value="" disabled selected>Select your option</option>
                     <option v-for="value in filteredRooms" :key="value.id" :value="value.roomNumber">{{ value.name }}
                     </option>
                 </select>

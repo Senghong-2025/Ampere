@@ -1,5 +1,5 @@
 <template>
-    <div class="p-2 md:p-6 w-full">
+    <div class="w-full">
         <FormHeader title="Load Details" />
         <div class="filter-form flex gap-2">
             <div class="flex items-center gap-2 w-full">
@@ -10,44 +10,83 @@
             </div>
             <div class="flex items-center gap-2 w-full">
                 <label for="date">Date</label>
-                <input id="date" v-model="selectedDate" type="month" class="w-full">
+                <input id="date" v-model="selectedDate" type="month" class="w-full" @change="getGeneratedLoadByMonth">
             </div>
         </div>
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2">
+        <div v-loading="isLoading" class="overflow-x-auto bg-white rounded-lg shadow-md mt-2">
             <table>
                 <thead>
                     <tr>    
                         <th width="80">Room</th>
-                        <th width="100">Old KW</th>
+                        <th width="120">Previous KW</th>
                         <th width="100">Current KW</th>
-                        <th width="120">Used</th>
-                        <th>ថ្លៃសម្រាម</th>
+                        <th width="80">Usage</th>
+                        <th width="130">Usage Amount</th>
+                        <th width="120">Extra</th>
+                        <th width="80" align="center">Is Paid</th>
+                        <th width="120">Paid Amount</th>
+                        <th width="120">Remark</th>
                         <th>Total</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr v-for="(room, index) in filteredRooms" :key="index">
-                        <td align="center">{{ room.roomNumber }}</td>
-                        <td align="center">{{ room.floor }}</td>
-                        <td>{{ room.name }}</td>
+                    <tr v-for="(room, index) in generatedLoad?.data" :key="index">
+                        <td align="center" class="!text-blue-500 font-semibold">{{ room.roomNumber }}</td>
+                        <td align="center">{{ room.previousMonthKW }}</td>
+                        <td align="center">{{ room.currentMonthKW }}</td>
+                        <td align="center">{{ room.usageDifference }}</td>
+                        <td align="center">{{ room.usageAmount }}</td>
+                        <td align="center">{{ room.extraAmountByRoom }}</td>
+                        <td align="center">{{ room.isPaid }}</td>
+                        <td align="center">{{ room.paidAmount }}</td>
+                        <td>{{ room.remark }}</td>
+                        <td align="center">{{ room.totalAmount }}</td>
                         <td>
-                            <div class="flex flex-wrap gap-2">
-                                <div v-for="(m, index2) in room.members" :key="index2">
-                                    <div class="text-blue-500">
-                                        <span>{{ m }}</span>
-                                        <span v-if="index2 !== room.members.length - 1">,</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="editLoad(room, generatedLoad?.id ?? '')">Edit</button>
                         </td>
-                    </tr> -->
+                    </tr>
                 </tbody>
             </table>
         </div>
+        <el-dialog
+            v-model="dialogVisible"
+            title="Update Load Details"
+            width="500"
+        >
+            <div class="w-full space-y-2">
+                <div class="flex w-full items-center">
+                    <label for="isPaid" class="w-[150px]">Is Paid</label>
+                    <input id="isPaid" v-model="updateModel.isPaid" type="checkbox">
+                </div>
+                <div class="flex w-full items-center">
+                    <label for="paidAmount" class="w-[150px]">Paid Amount</label>
+                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-full">
+                </div>
+                <div class="flex w-full items-center">
+                    <label for="remark" class="w-[150px]">Remark</label>
+                    <input id="remark" v-model="updateModel.remark" type="text" class="w-full">
+                </div>
+            </div>
+            <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="dialogVisible = false">Cancel</el-button>
+                <el-button type="primary" :loading="isLoading" @click="onUpdate">
+                Update
+                </el-button>
+            </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 <script lang="ts" setup>
 import FormHeader from '~/components/FormHeader.vue';
 
-const { selectedDate, selectedHome, homes} = useLoadDetails();
+const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoad, isLoading, editLoad, onUpdate,
+    dialogVisible,
+    updateModel,
+ } = useLoadDetails();
+onMounted(() => {
+    getGeneratedLoadByMonth();
+});
 </script>

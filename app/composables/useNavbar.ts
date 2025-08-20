@@ -36,11 +36,6 @@ function useNavbar() {
       isEnabled: true
     },
     {
-      name: "Load Details",
-      path: "/load/details",
-      isEnabled: true
-    },
-    {
       name: "Create",
       path: "/load/create",
       isEnabled: true
@@ -48,6 +43,16 @@ function useNavbar() {
     {
       name: "Room Load",
       path: "/load/room-load",
+      isEnabled: true
+    },
+    {
+      name: "Generate Load",
+      path: "/load/generate",
+      isEnabled: true
+    },
+    {
+      name: "Load Details",
+      path: "/load/details",
       isEnabled: true
     },
   ];

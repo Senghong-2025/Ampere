@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto max-w-3xl p-2 md:p-6">
+    <div class="mx-auto max-w-3xl">
         <FormHeader title="Room Load" />
         <div class="flex items-center gap-2 my-2">
             <label for="currentKW" class="w-32">Filter Month</label>

@@ -1,16 +1,16 @@
 <template>
-    <div class="p-2 md:p-6">
-        <div class="flex w-full overflow-x-auto p-2">
-            <div class="flex gap-2 w-full">
+    <div class="p-2 md:p-6 mx-auto">
+        <div class="flex w-full mb-2">
+            <div class="flex w-full gap-2 overflow-x-auto flex-nowrap">
                 <NuxtLink
                     v-for="(route, index) in loadRoutes" :key="index" :to="route.path"
-                    class="rounded-sm px-2 py-2"
-                    :class="[ $route.path === route.path ? 'bg-red-800 text-white': 'bg-gray-100' ]">
+                    class="rounded-sm px-2 py-2 shrink-0"
+                    :class="[$route.path === route.path ? 'bg-red-800 text-white' : 'bg-gray-100']">
                     <span>{{ route.name }}</span>
                 </NuxtLink>
             </div>
         </div>
-        <NuxtPage/>
+        <NuxtPage />
     </div>
 </template>
 <script setup lang="ts">
