@@ -1,6 +1,6 @@
 import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { formatInputDateTime, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
 import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
@@ -38,7 +38,7 @@ const useLoad = () => {
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => doc.data());
         const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date(model.createdOn))));
-        if(existingValue.value) {
+        if (existingValue.value) {
             isLoading.value = false;
             notifyHelper.error("This already existing data");
             return;
@@ -66,9 +66,51 @@ const useLoad = () => {
             );
             const snapshot = await getDocs(q);
             const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === getMonthOnly(new Date(model.createdOn)));
-            loadList.value = dataByMonth.map(doc => doc.data() as ILoadResponse);
+            loadList.value = dataByMonth.map(doc => {
+                const data = doc.data() as ILoadResponse;
+                return {
+                    ...data,
+                    id: doc.id ?? ''
+                };
+            });
         } catch (error) {
             console.error("Error fetching load list:", error);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    const getLoadById = async (id: string) => {
+        isLoading.value = true;
+        try {
+            const docRef = doc($db, "load", id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const data = docSnap.data() as ILoadResponse;
+                model.roomNumber = data.roomNumber;
+                model.currentKW = data.currentKW;
+                model.createdOn = data.createdOn;
+                model.modifiedOn = data.modifiedOn;
+                model.homeId = data.homeId;
+            } else {
+                console.error("No such document!");
+            }
+        } catch (error) {
+            console.error("Error fetching load by ID:", error);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+
+    const updateLoad = async (id: string) => {
+        isLoading.value = true;
+        try {
+            const docRef = doc($db, "load", id);
+            await updateDoc(docRef, model);
+            notifyHelper.success("Load updated successfully.");
+            navigateTo("/load/room-load");
+        } catch (error) {
+            console.error("Error updating load:", error);
         } finally {
             isLoading.value = false;
         }
@@ -85,6 +127,8 @@ const useLoad = () => {
         getLoadListByMonth,
         loadList,
         filteredRoomsByHome,
+        getLoadById,
+        updateLoad,
     }
 };
 

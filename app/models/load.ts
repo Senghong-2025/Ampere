@@ -13,12 +13,18 @@ export interface ICreateLoadRequest {
   modifiedOn: string;
 }
 export interface ILoadResponse {
+  id: string;
   homeId: number;
   roomNumber: number;
   currentKW: number;
   createdOn: string;
   modifiedOn: string;
 };
+
+export interface IDataLoad {
+  id: string;
+  data: ILoadResponse[];
+}
 export interface ILoadData {
   roomNumber: number;       // Room identifier
   roomName: string;         // Optional: Room name
