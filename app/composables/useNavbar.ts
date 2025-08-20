@@ -44,7 +44,12 @@ function useNavbar() {
       name: "Create",
       path: "/load/create",
       isEnabled: true
-    }
+    },
+    {
+      name: "Room Load",
+      path: "/load/room-load",
+      isEnabled: true
+    },
   ];
 
   return { navbars, loadRoutes };

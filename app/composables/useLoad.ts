@@ -58,7 +58,7 @@ const useLoad = () => {
 
     const loadList = ref<ILoadResponse[]>([]);
     const getLoadListByMonth = async () => {
-        console.log('sdfsdf', selectedHome.value, new Date())
+        isLoading.value = true;
         try {
             const q = query(
                 collection($db, "load"),
@@ -69,6 +69,8 @@ const useLoad = () => {
             loadList.value = dataByMonth.map(doc => doc.data() as ILoadResponse);
         } catch (error) {
             console.error("Error fetching load list:", error);
+        } finally {
+            isLoading.value = false;
         }
     };
     return {
