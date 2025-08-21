@@ -4,6 +4,7 @@
     <div class="min-h-[calc(100vh-60px)] w-full">
       <NuxtPage />
     </div>
+    <TheFooter />
   </div>
 </template>
 <script lang="ts" setup>
