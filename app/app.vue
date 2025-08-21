@@ -1,7 +1,7 @@
 <template>
   <div class="w-full bg-gray-300 relative">
     <TheHeader />
-    <div class="min-h-screen w-full">
+    <div class="min-h-[calc(100vh-60px)] w-full">
       <NuxtPage />
     </div>
   </div>

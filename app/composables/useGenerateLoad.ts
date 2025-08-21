@@ -1,4 +1,4 @@
-import type { IGenerateLoad, IGenerateLoadData } from '~/models/generateLoad';
+import { type IGenerateLoad, GenerateLoadData } from '~/models/generateLoad';
 import { formatInputDate, getMonthOnly } from './../helpers/dateTimeHelper';
 import notifyHelper from '~/helpers/notifyHelper';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
@@ -43,13 +43,13 @@ const useGenerateLoad = () => {
             const currentData = await getLoadListByMonth(thisMonth.value, false);
             const lastMonthData = await getLoadListByMonth(lastMonth.value, false);
 
-            const loadData: IGenerateLoadData[] = (currentData ?? []).map((item) => {
+            const loadData: GenerateLoadData[] = (currentData ?? []).map((item) => {
                 const lastMonthItem = lastMonthData?.find(
                     (lastItem) => lastItem.roomNumber === item.roomNumber
                 );
                 const calUsageKw = item.currentKW - (lastMonthItem?.currentKW ?? 0);
                 const calUsageAmount = (model.usageAmount / model.totalUsage) * (calUsageKw ?? 0);
-                return {
+                return new GenerateLoadData({
                     roomNumber: item.roomNumber,
                     currentMonthKW: item.currentKW,
                     previousMonthKW: lastMonthItem?.currentKW ?? 0,
@@ -61,7 +61,7 @@ const useGenerateLoad = () => {
                     paidAmount: 0,
                     remark: "",
                     isPaid: false
-                };
+                });
             }).sort((a, b) => a.roomNumber - b.roomNumber);
 
             generateLoad.value = {

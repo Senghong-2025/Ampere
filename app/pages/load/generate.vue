@@ -14,6 +14,10 @@
                 </select>
             </div>
             <div class="input-form">
+                <label for="extra">Extra</label>
+                <input id="extra" v-model="model.extraAmount" type="number" name="extra">
+            </div>
+            <div class="input-form">
                 <label for="load">Total usage (KW)</label>
                 <input id="load" v-model="model.totalUsage" type="number" name="load">
             </div>
@@ -46,16 +50,16 @@
                 <tbody>
                     <tr v-for="(room, index) in generateLoad?.data" :key="index">
                         <td align="center" class="sticky left-0 z-10 shadow-sm text-center bg-gray-100">{{ room.roomNumber }}</td>
-                        <td align="center">{{ room.previousMonthKW }}</td>
-                        <td align="center">{{ room.currentMonthKW }}</td>
-                        <td align="center" class="!text-red-500 font-semibold">{{ room.usageDifference }} Kwh</td>
+                        <td align="center">{{ room.previousMonthKWForDisplay }}</td>
+                        <td align="center">{{ room.currentMonthKWForDisplay }}</td>
+                        <td align="center" class="!text-red-500 font-semibold">{{ room.usageDifferenceForDisplay }}</td>
                         <td align="center">
                             <span v-if="room.hasUsageThisMonth" class="text-blue-500">Yes</span>
                             <span v-else>No</span>
                         </td>
-                        <td align="center">{{ room.usageAmount ?? "-" }}</td>
-                        <td align="center">{{ room.extraAmountByRoom }}</td>
-                        <td align="center">{{ room.totalAmount ?? "-" }}</td>
+                        <td align="center">{{ room.usageAmountForDisplay }}</td>
+                        <td align="center">{{ room.extraAmountByRoomForDisplay }}</td>
+                        <td align="center">{{ room.totalAmountForDisplay }}</td>
                     </tr>
                 </tbody>
             </table>

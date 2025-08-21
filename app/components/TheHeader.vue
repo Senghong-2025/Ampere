@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-between w-full bg-[var(--bg2)] h-[52px] items-center px-4 sticky top-0 z-10">
+  <div class="flex justify-between w-full bg-[var(--bg2)] h-[52px] items-center px-4 sticky top-0 z-50">
     <div class="flex gap-2 items-center">
       <div class="w-8 h-8">
         <img src="../assets/icons/logo.png" alt="">

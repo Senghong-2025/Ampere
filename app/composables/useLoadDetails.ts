@@ -1,6 +1,6 @@
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { rooms } from './../assets/data/room';
-import type { IGenerateLoad, IGenerateLoadData } from '~/models/generateLoad';
+import { GenerateLoad, type GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
 
 interface IUpdateModel {
@@ -18,7 +18,7 @@ const useLoadDetails = () => {
     const selectedHome = ref(homes[0]);
 
     const isLoading = ref(false);
-    const generatedLoad = ref<IGenerateLoad>();
+    const generatedLoad = ref<GenerateLoad>();
     const getGeneratedLoadByMonth = async () => {
         isLoading.value = true;
         try {
@@ -33,13 +33,13 @@ const useLoadDetails = () => {
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
                 querySnapshot.docs.map((doc) => {
-                    generatedLoad.value = doc.data() as IGenerateLoad;
+                    generatedLoad.value = new GenerateLoad(doc.data() as IGenerateLoad);
                     if (generatedLoad.value) {
                         generatedLoad.value.id = doc.id;
                     }
                 });
             } else {
-                generatedLoad.value = {} as IGenerateLoad;
+                generatedLoad.value = new GenerateLoad({} as IGenerateLoad);
                 notifyHelper.info('No generated load found for the specified month and year.');
             }
         } catch (error) {
@@ -56,8 +56,8 @@ const useLoadDetails = () => {
         remark: ""
     });
     const updatedId = ref<string>("");
-    const clonedUpdateData = ref<IGenerateLoadData>();
-    const editLoad = (room: IGenerateLoadData, id: string) => {
+    const clonedUpdateData = ref<GenerateLoadData>();
+    const editLoad = (room: GenerateLoadData, id: string) => {
         dialogVisible.value = true;
         updatedId.value = id;
         clonedUpdateData.value = room;

@@ -13,9 +13,9 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="getGeneratedLoadByMonth">
             </div>
         </div>
-        <div v-loading="isLoading" class="overflow-x-auto bg-white rounded-lg shadow-md mt-2">
+        <div v-loading="isLoading" class="overflow-auto bg-white rounded-lg shadow-md mt-2 relative" style="height: calc(100vh - 300px);">
             <table class="!min-w-[1000px]">
-                <thead>
+                <thead class="sticky top-0 z-10">
                     <tr>
                         <th width="60" class="sticky left-0 bg-gray-200">Room</th>
                         <th width="120">Previous KW</th>
@@ -34,24 +34,24 @@
                     <tr v-for="(room, index) in generatedLoad?.data" :key="index">
                         <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">{{
                             room.roomNumber }}</td>
-                        <td align="center">{{ room.previousMonthKW }}</td>
-                        <td align="center">{{ room.currentMonthKW }}</td>
-                        <td align="center">{{ room.usageDifference }}</td>
-                        <td align="center">{{ room.usageAmount }}</td>
-                        <td align="center">{{ room.extraAmountByRoom }}</td>
+                        <td align="left">{{ room.previousMonthKWForDisplay }}</td>
+                        <td align="left">{{ room.currentMonthKWForDisplay }}</td>
+                        <td align="left" class="!text-red-600">{{ room.usageDifferenceForDisplay }}</td>
+                        <td align="center">{{ room.usageAmountForDisplay }}</td>
+                        <td align="center">{{ room.extraAmountByRoomForDisplay }}</td>
                         <td align="center">
                             <span v-if="room.isPaid">
                                 <img src="../../assets/icons/checkmark.png" class="w-6 h-6" alt="checked">
                             </span>
                             <span v-else> -- </span>
                         </td>
-                        <td align="center">{{ room.paidAmount }}</td>
+                        <td align="right">{{ room.paidAmountForDisplay }}</td>
                         <td>{{ room.remark }}</td>
                         <td
                             align="right" class="!text-white font-semibold"
-                            :class="[room.isPaid ? '!bg-green-600' : '!bg-red-300']"
+                            :class="getStatusClass(room)"
                         >
-                            {{ room.totalAmount }}
+                            {{ room.totalAmountForDisplay }}
                         </td>
                         <td align="center">
                             <button
@@ -96,6 +96,7 @@
 <script lang="ts" setup>
 import FormHeader from '~/components/FormHeader.vue';
 import deviceHelper from '~/helpers/deviceHelper';
+import type { GenerateLoadData } from '~/models/generateLoad';
 
 const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoad, isLoading, editLoad, onUpdate,
     dialogVisible,
@@ -105,4 +106,9 @@ const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoa
 onMounted(() => {
     getGeneratedLoadByMonth();
 });
+const getStatusClass = (room: GenerateLoadData) => {
+  if (room.isPaid) return '!bg-green-600'
+  if (!room.isPaid && (room.paidAmount ?? 0) > 0) return '!bg-yellow-500'
+  return '!bg-red-300'
+}
 </script>
