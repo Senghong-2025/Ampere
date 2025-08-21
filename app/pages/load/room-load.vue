@@ -5,9 +5,9 @@
             <label for="currentKW" class="w-32">Filter Month</label>
             <input id="currentKW" v-model="model.createdOn" type="date" name="currentKW" class="w-full" @change="onMonthChange">
         </div>
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md relative" style="height: calc(100vh - 300px);">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md relative">
             <table style="min-width: 350px !important;">
-                <thead class="sticky top-0 z-10">
+                <thead>
                     <tr>
                         <th>Room Number</th>
                         <th>Total KW for <span class="text-blue-600">{{ getMonthOnly(new Date(model.createdOn)) }}</span></th>

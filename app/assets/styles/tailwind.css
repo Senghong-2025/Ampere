@@ -1,6 +1,6 @@
 /* Add table styles */
 table {
-    @apply w-full border-collapse min-w-[600px];
+  @apply w-full border border-gray-300 border-collapse border-spacing-0;
 }
 
 thead tr {
@@ -12,7 +12,7 @@ tbody tr {
 }
 
 td {
-    @apply px-2 py-4 border-b border-gray-200 text-gray-700;
+    @apply px-2 py-4 border-[1px] border-gray-200 text-gray-700;
 }
 
 th {

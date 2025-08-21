@@ -4,6 +4,7 @@ import { GenerateLoad, type GenerateLoadData, type IGenerateLoad } from '~/model
 import notifyHelper from '~/helpers/notifyHelper';
 
 interface IUpdateModel {
+    roomNumber: string;
     isPaid: boolean;
     paidAmount: number;
     remark: string;
@@ -51,6 +52,7 @@ const useLoadDetails = () => {
 
     const dialogVisible = ref(false);
     const updateModel = reactive<IUpdateModel>({
+        roomNumber: "",
         isPaid: false,
         paidAmount: 0,
         remark: ""

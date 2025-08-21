@@ -13,20 +13,20 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="getGeneratedLoadByMonth">
             </div>
         </div>
-        <div v-loading="isLoading" class="overflow-auto bg-white rounded-lg shadow-md mt-2 relative" style="height: calc(100vh - 300px);">
-            <table class="!min-w-[1000px]">
-                <thead class="sticky top-0 z-10">
+        <div v-loading="isLoading" class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]">
+            <table class="!min-w-[1200px]">
+                <thead>
                     <tr>
                         <th width="60" class="sticky left-0 bg-gray-200">Room</th>
                         <th width="120">Previous KW</th>
                         <th width="120">Current KW</th>
-                        <th width="80">Usage</th>
+                        <th width="100">Usage</th>
                         <th width="140">Usage Amount</th>
                         <th width="120">Extra</th>
                         <th width="80" align="center">Is Paid</th>
-                        <th width="120">Paid Amount</th>
+                        <th width="125">Paid Amount</th>
                         <th width="120">Remark</th>
-                        <th width="100" align="center">Total</th>
+                        <th width="120" align="center">Total</th>
                         <th width="80" align="center">Action</th>
                     </tr>
                 </thead>
@@ -37,7 +37,7 @@
                         <td align="left">{{ room.previousMonthKWForDisplay }}</td>
                         <td align="left">{{ room.currentMonthKWForDisplay }}</td>
                         <td align="left" class="!text-red-600">{{ room.usageDifferenceForDisplay }}</td>
-                        <td align="center">{{ room.usageAmountForDisplay }}</td>
+                        <td align="right">{{ room.usageAmountForDisplay }}</td>
                         <td align="center">{{ room.extraAmountByRoomForDisplay }}</td>
                         <td align="center">
                             <span v-if="room.isPaid">
@@ -65,7 +65,10 @@
                 </tbody>
             </table>
         </div>
-        <el-dialog v-model="dialogVisible" title="Update Load Details" :width="deviceHelper.isMobile ? '90%' : 400">
+        <el-dialog v-model="dialogVisible" title="Update Load Details" :width="deviceHelper.isMobile ? '90%' : '600px'">
+            <div class="text-gray-500 bg-blue-200 p-2 rounded-md mb-2">
+                Update the load details for the selected home and date room number: <span class="text-blue-600 font-bold">{{ updateModel.roomNumber }}</span>
+            </div>
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
                     <label for="isPaid" class="w-[150px]">Is Paid</label>

@@ -3,9 +3,8 @@ export interface IGenerateLoad {
     date: string;                    // Report date (ISO string)
     homeId: number;                   // Home identifier
     totalUsage: number;               // Total kW used this month (sum of differences)
-    data: GenerateLoadData[];        // Per-room breakdown
+    data: IGenerateLoadData[];        // Per-room breakdown
 }
-
 export class GenerateLoad implements IGenerateLoad {
     id?: string | undefined;
     date: string;
@@ -67,10 +66,12 @@ export class GenerateLoadData implements IGenerateLoadData {
     }
 
     get extraAmountByRoomForDisplay() {
+        if (this.extraAmountByRoom === 0) return "--";
         return this.formatCurrency(this.extraAmountByRoom)
     }
 
     get paidAmountForDisplay() {
+        if (this.paidAmount === undefined || this.paidAmount === 0) return "--";
         return this.formatCurrency(this.paidAmount ?? 0)
     }
 

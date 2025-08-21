@@ -10,7 +10,6 @@
                 <label for="homeId">Home</label>
                 <select id="homeId" v-model="selectedHome" name="homeId">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
-                    <option v-for="home in homes" :key="home" :value="2">{{ 2 }}</option>
                 </select>
             </div>
             <div class="input-form">
@@ -26,12 +25,13 @@
                 <input id="usageAmount" v-model="model.usageAmount" type="text" name="usageAmount">
             </div>
             <div v-if="model.usageAmount > 0 && model.totalUsage > 0" class="text-red-500 mx-2 mb-2 bg-gray-100 p-4 rounded-sm">
-                {{ model.usageAmount / model.totalUsage }} ៛/kwh
+                {{ (model.usageAmount / model.totalUsage).toLocaleString() }} ៛/kwh
             </div>
         </form>
         <div class="flex gap-2 mb-2">
-            <TheButton1 name="Generate Load" type="tertiary" :loading="isLoading" @click="generateNewLoad"/>
+            <TheButton1 v-if="!isShowPreview" name="Generate To Preview" type="tertiary" :loading="isLoading" @click="generateNewLoad"/>
             <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading" @click="onSave"/>
+            <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
         <div v-if="isShowPreview" class="overflow-x-auto relative w-full bg-white rounded-lg shadow-md">
             <table class="w-full table-fixed">
@@ -68,5 +68,5 @@
 </template>
 <script lang="ts" setup>
 
-const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, selectedHome } = useGenerateLoad();
+const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, selectedHome, onReset } = useGenerateLoad();
 </script>

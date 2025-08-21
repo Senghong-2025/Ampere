@@ -1,7 +1,8 @@
-import { type IGenerateLoad, GenerateLoadData } from '~/models/generateLoad';
+import { type IGenerateLoadData, GenerateLoad, GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
 import { formatInputDate, getMonthOnly } from './../helpers/dateTimeHelper';
 import notifyHelper from '~/helpers/notifyHelper';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import type { ILoadResponse } from '~/models/load';
 
 export interface IGenerateRequest {
     date: string;
@@ -32,7 +33,20 @@ const useGenerateLoad = () => {
         const d = new Date(selectedDate.value);
         return getMonthOnly(new Date(d.getFullYear(), d.getMonth() - 1, 1));
     });
-    const generateLoad = ref<IGenerateLoad>();
+
+    const convertExtraAmount = (amount: number, load: ILoadResponse) => {
+        if (load.homeId !== 3) return amount;
+        switch (load.roomNumber) {
+            case 1:
+                return amount * 3;
+            case 2:
+                return 0;
+            default:
+                return amount;
+        }
+    };
+    const generateLoad = ref<GenerateLoad>();
+    const generateLoadDataForCreate = ref<IGenerateLoad>();
     const generateNewLoad = async () => {
         if (!model.homeId || model.usageAmount < 1 || model.totalUsage < 1) {
             notifyHelper.error("Please fill in all fields correctly.");
@@ -43,36 +57,45 @@ const useGenerateLoad = () => {
             const currentData = await getLoadListByMonth(thisMonth.value, false);
             const lastMonthData = await getLoadListByMonth(lastMonth.value, false);
 
-            const loadData: GenerateLoadData[] = (currentData ?? []).map((item) => {
+            const createLoadData:IGenerateLoadData[] = [];
+            const loadData: GenerateLoadData[]  = (currentData ?? []).map((item) => {
                 const lastMonthItem = lastMonthData?.find(
                     (lastItem) => lastItem.roomNumber === item.roomNumber
                 );
                 const calUsageKw = item.currentKW - (lastMonthItem?.currentKW ?? 0);
                 const calUsageAmount = (model.usageAmount / model.totalUsage) * (calUsageKw ?? 0);
-                return new GenerateLoadData({
+
+                const result = {
                     roomNumber: item.roomNumber,
                     currentMonthKW: item.currentKW,
                     previousMonthKW: lastMonthItem?.currentKW ?? 0,
                     hasUsageThisMonth: calUsageKw < item.currentKW,
                     usageDifference: calUsageKw,
                     usageAmount: calUsageAmount,
-                    extraAmountByRoom: model.extraAmount,
+                    extraAmountByRoom: convertExtraAmount(model.extraAmount, item),
                     totalAmount: model.extraAmount + calUsageAmount,
                     paidAmount: 0,
                     remark: "",
                     isPaid: false
-                });
+                };
+                createLoadData.push(result);
+                return new GenerateLoadData(result);
             }).sort((a, b) => a.roomNumber - b.roomNumber);
 
             generateLoad.value = {
                 date: selectedDate.value,
                 homeId: Number(model.homeId),
-                totalUsage: 1000,
+                totalUsage: Number(model.totalUsage),
                 data: loadData,
             };
-            console.log('Generated Load:', generateLoad.value);
+            generateLoadDataForCreate.value = {
+                date: selectedDate.value,
+                homeId: Number(model.homeId),
+                totalUsage: Number(model.totalUsage),
+                data: createLoadData.sort((a, b) => a.roomNumber - b.roomNumber),
+            };
         } catch (error) {
-            console.error("Errr:", error);
+            console.error("Error:", error);
         } finally {
             isLoading.value = false;
         }
@@ -87,7 +110,6 @@ const useGenerateLoad = () => {
             const lastDay = new Date(Number(year), Number(month), 0).getDate();
             const startDate = `${year}-${month}-01`;
             const endDate = `${year}-${month}-${String(lastDay).padStart(2, "0")}`;
-            console.log(startDate, endDate);
             const q = query(
                 collection($db, "generatedLoad"),
                 where("homeId", "==", Number(model.homeId))
@@ -104,7 +126,7 @@ const useGenerateLoad = () => {
                 notifyHelper.info("Data already exists for the selected month.");
                 return;
             }
-            await addDoc(collection($db, "generatedLoad"), generateLoad.value);
+            await addDoc(collection($db, "generatedLoad"), generateLoadDataForCreate.value);
             notifyHelper.success("Generated load saved successfully.");
         } catch (error) {
             console.error("Error saving load:", error);
@@ -113,6 +135,17 @@ const useGenerateLoad = () => {
         }
     };
 
+    const onReset = () => {
+       model.homeId = selectedHome.value ?? 0;
+       model.usageAmount = 0;
+       model.totalUsage = 0;
+       generateLoad.value = new GenerateLoad({
+           date: model.date,
+           homeId: model.homeId,
+           totalUsage: model.totalUsage,
+           data: [],
+       });
+    };
     return {
         model,
         generateNewLoad,
@@ -122,6 +155,7 @@ const useGenerateLoad = () => {
         homes,
         onSave,
         selectedHome,
+        onReset,
     };
 };
 
