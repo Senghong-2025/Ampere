@@ -1,7 +1,7 @@
 import type { IGenerateLoad, IGenerateLoadData } from '~/models/generateLoad';
 import { formatInputDate, getMonthOnly } from './../helpers/dateTimeHelper';
 import notifyHelper from '~/helpers/notifyHelper';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 
 export interface IGenerateRequest {
     date: string;
@@ -22,9 +22,16 @@ const useGenerateLoad = () => {
         extraAmount: 0,
     });
 
-    const today = new Date();
-    const thisMonth = ref(getMonthOnly(today));
-    const lastMonth = ref(getMonthOnly(new Date(today.getFullYear(), today.getMonth() - 1, 1)));
+    const selectedDate = computed(() => model.date);
+    const thisMonth = computed(() => {
+        const d = new Date(selectedDate.value);
+        return getMonthOnly(d);
+    });
+
+    const lastMonth = computed(() => {
+        const d = new Date(selectedDate.value);
+        return getMonthOnly(new Date(d.getFullYear(), d.getMonth() - 1, 1));
+    });
     const generateLoad = ref<IGenerateLoad>();
     const generateNewLoad = async () => {
         if (!model.homeId || model.usageAmount < 1 || model.totalUsage < 1) {
@@ -50,7 +57,7 @@ const useGenerateLoad = () => {
                     usageDifference: calUsageKw,
                     usageAmount: calUsageAmount,
                     extraAmountByRoom: model.extraAmount,
-                    totalAmount: model.extraAmount,
+                    totalAmount: model.extraAmount + calUsageAmount,
                     paidAmount: 0,
                     remark: "",
                     isPaid: false
@@ -58,8 +65,8 @@ const useGenerateLoad = () => {
             }).sort((a, b) => a.roomNumber - b.roomNumber);
 
             generateLoad.value = {
-                date: formatInputDate(new Date()),
-                homeId: 1,
+                date: selectedDate.value,
+                homeId: Number(model.homeId),
                 totalUsage: 1000,
                 data: loadData,
             };
@@ -73,12 +80,36 @@ const useGenerateLoad = () => {
     const isShowPreview = computed(() => !!generateLoad.value?.data.length);
 
     const onSave = async () => {
+        isLoading.value = true;
         try {
-            console.log('Saving generated load:', generateLoad.value);
+            const [year, month] = formatInputDate(new Date(selectedDate.value)).split('-');
+
+            const lastDay = new Date(Number(year), Number(month), 0).getDate();
+            const startDate = `${year}-${month}-01`;
+            const endDate = `${year}-${month}-${String(lastDay).padStart(2, "0")}`;
+            console.log(startDate, endDate);
+            const q = query(
+                collection($db, "generatedLoad"),
+                where("homeId", "==", Number(model.homeId))
+            );
+
+            const snapshot = await getDocs(q);
+
+            const existingData = snapshot.docs.filter(doc => {
+                const data = doc.data();
+                return data.date >= startDate && data.date <= endDate;
+            });
+
+            if (existingData.length > 0) {
+                notifyHelper.info("Data already exists for the selected month.");
+                return;
+            }
             await addDoc(collection($db, "generatedLoad"), generateLoad.value);
             notifyHelper.success("Generated load saved successfully.");
         } catch (error) {
             console.error("Error saving load:", error);
+        } finally {
+            isLoading.value = false;
         }
     };
 

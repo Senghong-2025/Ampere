@@ -1,7 +1,7 @@
 import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
 import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
-import { formatInputDateTime, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
+import { formatInputDate, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
 import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
     const { $db } = useNuxtApp();
@@ -18,8 +18,8 @@ const useLoad = () => {
     const model = reactive<ICreateLoadRequest>({
         roomNumber: 0,
         currentKW: 0,
-        createdOn: formatInputDateTime(new Date()),
-        modifiedOn: formatInputDateTime(new Date()),
+        createdOn: formatInputDate(new Date()),
+        modifiedOn: formatInputDate(new Date()),
         homeId: 0
     });
     const handleSubmit = async () => {
@@ -29,7 +29,7 @@ const useLoad = () => {
             roomNumber: model.roomNumber,
             currentKW: model.currentKW,
             createdOn: model.createdOn,
-            modifiedOn: formatInputDateTime(new Date())
+            modifiedOn: formatInputDate(new Date())
         };
         const q = query(
             collection($db, "load"),

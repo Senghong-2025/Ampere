@@ -3,6 +3,10 @@
         <FormHeader title="Generate Load" />
         <form action="#">
             <div class="input-form">
+                <label for="date">Date</label>
+                <input id="date" v-model="model.date" type="date" name="date" >
+            </div>
+            <div class="input-form">
                 <label for="homeId">Home</label>
                 <select id="homeId" v-model="selectedHome" name="homeId">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
@@ -62,8 +66,3 @@
 
 const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, selectedHome } = useGenerateLoad();
 </script>
-<style scoped>
-tbody tr:hover {
-    background-color: #e0f7fa;
-}
-</style>

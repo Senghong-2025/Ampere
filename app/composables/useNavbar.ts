@@ -17,11 +17,11 @@ function useNavbar() {
       path: "/load",
       isEnabled: true
     },
-    // {
-    //   name: "Cable Sizing",
-    //   path: "/cable-sizing",
-    //   isEnabled: false
-    // },
+    {
+      name: "Setting",
+      path: "/setting",
+      isEnabled: true
+    },
     // {
     //   name: "Voltage Drop",
     //   path: "/voltage-drop",

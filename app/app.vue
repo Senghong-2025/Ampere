@@ -1,7 +1,7 @@
 <template>
   <div class="w-full bg-gray-300 relative">
     <TheHeader />
-    <div class="min-h-screen w-full overflow-y-auto">
+    <div class="min-h-screen w-full">
       <NuxtPage />
     </div>
   </div>

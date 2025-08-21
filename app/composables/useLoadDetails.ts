@@ -56,25 +56,30 @@ const useLoadDetails = () => {
         remark: ""
     });
     const updatedId = ref<string>("");
-    const closeUpdateData = ref<IGenerateLoadData>();
+    const clonedUpdateData = ref<IGenerateLoadData>();
     const editLoad = (room: IGenerateLoadData, id: string) => {
         dialogVisible.value = true;
         updatedId.value = id;
-        closeUpdateData.value = room;
+        clonedUpdateData.value = room;
         Object.assign(updateModel, room);
+    };
+
+    const onSwitchChange = () => {
+        const total = clonedUpdateData.value?.totalAmount ?? 0;
+        updateModel.paidAmount = updateModel.isPaid ? total : 0;
     };
 
     const onUpdate = async () => {
         isLoading.value = true;
         try {
             generatedLoad.value?.data.map(v => {
-                if (v.roomNumber === closeUpdateData.value?.roomNumber) {
-                    v.currentMonthKW = closeUpdateData.value.currentMonthKW;
-                    v.previousMonthKW = closeUpdateData.value.previousMonthKW;
-                    v.usageDifference = closeUpdateData.value.usageDifference;
-                    v.usageAmount = closeUpdateData.value.usageAmount;
-                    v.extraAmountByRoom = closeUpdateData.value.extraAmountByRoom;
-                    v.totalAmount = closeUpdateData.value.totalAmount;
+                if (v.roomNumber === clonedUpdateData.value?.roomNumber) {
+                    v.currentMonthKW = clonedUpdateData.value.currentMonthKW;
+                    v.previousMonthKW = clonedUpdateData.value.previousMonthKW;
+                    v.usageDifference = clonedUpdateData.value.usageDifference;
+                    v.usageAmount = clonedUpdateData.value.usageAmount;
+                    v.extraAmountByRoom = clonedUpdateData.value.extraAmountByRoom;
+                    v.totalAmount = clonedUpdateData.value.totalAmount;
                     v.isPaid = updateModel.isPaid;
                     v.paidAmount = updateModel.paidAmount;
                     v.remark = updateModel.remark;
@@ -101,6 +106,7 @@ const useLoadDetails = () => {
         onUpdate,
         updateModel,
         dialogVisible,
+        onSwitchChange,
     }
 };
 

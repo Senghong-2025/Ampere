@@ -1,6 +1,6 @@
 <template>
-    <div class="p-2 md:p-6 mx-auto">
-        <div class="flex w-full mb-2">
+    <div class="mx-auto max-w-3xl relative">
+        <div class="flex w-full mb-2 sticky top-[52px] z-10 bg-gray-200 py-2 sm:rounded-sm sm:mt-2 sm:px-2 sm:top-[58px]">
             <div class="flex w-full gap-2 overflow-x-auto flex-nowrap">
                 <NuxtLink
                     v-for="(route, index) in loadRoutes" :key="index" :to="route.path"
@@ -10,7 +10,9 @@
                 </NuxtLink>
             </div>
         </div>
-        <NuxtPage />
+        <div class="p-2 md:p-6">
+            <NuxtPage />
+        </div>
     </div>
 </template>
 <script setup lang="ts">

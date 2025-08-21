@@ -16,7 +16,7 @@
         <div v-loading="isLoading" class="overflow-x-auto bg-white rounded-lg shadow-md mt-2">
             <table class="!min-w-[1000px]">
                 <thead>
-                    <tr>    
+                    <tr>
                         <th width="60" class="sticky left-0 bg-gray-200">Room</th>
                         <th width="120">Previous KW</th>
                         <th width="120">Current KW</th>
@@ -32,49 +32,63 @@
                 </thead>
                 <tbody>
                     <tr v-for="(room, index) in generatedLoad?.data" :key="index">
-                        <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">{{ room.roomNumber }}</td>
+                        <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">{{
+                            room.roomNumber }}</td>
                         <td align="center">{{ room.previousMonthKW }}</td>
                         <td align="center">{{ room.currentMonthKW }}</td>
                         <td align="center">{{ room.usageDifference }}</td>
                         <td align="center">{{ room.usageAmount }}</td>
                         <td align="center">{{ room.extraAmountByRoom }}</td>
-                        <td align="center">{{ room.isPaid }}</td>
+                        <td align="center">
+                            <span v-if="room.isPaid">
+                                <img src="../../assets/icons/checkmark.png" class="w-6 h-6" alt="checked">
+                            </span>
+                            <span v-else> -- </span>
+                        </td>
                         <td align="center">{{ room.paidAmount }}</td>
                         <td>{{ room.remark }}</td>
-                        <td align="center" class="!bg-blue-400/50">{{ room.totalAmount }}</td>
+                        <td
+                            align="right" class="!text-white font-semibold"
+                            :class="[room.isPaid ? '!bg-green-600' : '!bg-red-300']"
+                        >
+                            {{ room.totalAmount }}
+                        </td>
                         <td align="center">
-                            <button class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="editLoad(room, generatedLoad?.id ?? '')">Edit</button>
+                            <button
+                                class="text-blue-500 hover:text-blue-700 cursor-pointer"
+                                @click="editLoad(room, generatedLoad?.id ?? '')"
+                            >
+                                Edit
+                            </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <el-dialog
-            v-model="dialogVisible"
-            title="Update Load Details"
-            :width="deviceHelper.isMobile ? '90%' : '500px'"
-        >
+        <el-dialog v-model="dialogVisible" title="Update Load Details" :width="deviceHelper.isMobile ? '90%' : 400">
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
                     <label for="isPaid" class="w-[150px]">Is Paid</label>
-                    <input id="isPaid" v-model="updateModel.isPaid" type="checkbox">
+                    <input id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1" @change="onSwitchChange">
                 </div>
+
                 <div class="flex w-full items-center">
                     <label for="paidAmount" class="w-[150px]">Paid Amount</label>
-                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-full">
+                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="flex-1">
                 </div>
+
                 <div class="flex w-full items-center">
                     <label for="remark" class="w-[150px]">Remark</label>
-                    <input id="remark" v-model="updateModel.remark" type="text" class="w-full">
+                    <input id="remark" v-model="updateModel.remark" type="text" class="flex-1">
                 </div>
             </div>
             <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="dialogVisible = false">Cancel</el-button>
-                <el-button type="primary" :loading="isLoading" @click="onUpdate">
-                Update
-                </el-button>
-            </div>
+                <div class="dialog-footer">
+                    <el-button @click="dialogVisible = false">Cancel</el-button>
+                    <el-button type="primary" :loading="isLoading" @click="onUpdate">
+                        Update
+                    </el-button>
+                </div>
             </template>
         </el-dialog>
     </div>
@@ -86,7 +100,8 @@ import deviceHelper from '~/helpers/deviceHelper';
 const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoad, isLoading, editLoad, onUpdate,
     dialogVisible,
     updateModel,
- } = useLoadDetails();
+    onSwitchChange,
+} = useLoadDetails();
 onMounted(() => {
     getGeneratedLoadByMonth();
 });

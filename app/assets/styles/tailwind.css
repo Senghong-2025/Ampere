@@ -2,15 +2,19 @@
 table {
     @apply w-full border-collapse min-w-[600px];
 }
+
 thead tr {
     @apply border-gray-400 bg-gray-200;
 }
+
 tbody tr {
     @apply hover:bg-gray-100 transition-colors;
 }
+
 td {
     @apply px-2 py-4 border-b border-gray-200 text-gray-700;
 }
+
 th {
     @apply px-2 py-4 text-left text-sm font-medium text-gray-600;
 }
@@ -18,6 +22,16 @@ th {
 .input-form {
     @apply p-2 flex flex-col;
 }
-.input-form input, .input-form select, .input-form textarea, input, select {
+
+.input-form input,
+.input-form select,
+.input-form textarea,
+input,
+select {
     @apply border-1 border-blue-600 bg-gray-200 rounded-md px-2 focus:outline-none h-[40px];
+}
+
+input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
 }
