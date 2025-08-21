@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full max-w-4xl mx-auto">
+    <div class="w-full mx-auto">
         <FormHeader title="Generate Load" />
         <form action="#">
             <div class="input-form">

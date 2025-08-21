@@ -1,7 +1,8 @@
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { rooms } from './../assets/data/room';
-import { GenerateLoad, type GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
+import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
+import { createColumn, exportHelper } from '~/helpers/explortHelper';
 
 interface IUpdateModel {
     roomNumber: string;
@@ -21,6 +22,7 @@ const useLoadDetails = () => {
     const isLoading = ref(false);
     const generatedLoad = ref<GenerateLoad>();
     const generateLoadForUpdate = ref<IGenerateLoad>();
+    const totalLoadByMonth = ref<GenerateLoadData>();
     const getGeneratedLoadByMonth = async () => {
         isLoading.value = true;
         try {
@@ -39,11 +41,41 @@ const useLoadDetails = () => {
                     if (generatedLoad.value) {
                         generatedLoad.value.id = doc.id;
                     }
+                    const preTotal: IGenerateLoadData = {
+                        roomNumber: 0,
+                        currentMonthKW: 0,
+                        previousMonthKW: 0,
+                        hasUsageThisMonth: false,
+                        usageDifference: 0,
+                        usageAmount: 0,
+                        extraAmountByRoom: 0,
+                        totalAmount: 0
+                    };
+                    generatedLoad.value.data.forEach((val) => {
+                        preTotal.roomNumber = 0;
+                        preTotal.currentMonthKW += 0;
+                        preTotal.previousMonthKW += 0;
+                        preTotal.hasUsageThisMonth = false;
+                        preTotal.usageDifference += val.usageDifference;
+                        preTotal.usageAmount += val.usageAmount;
+                        preTotal.extraAmountByRoom += val.extraAmountByRoom;
+                        preTotal.totalAmount += val.totalAmount;
+                    });
+                    totalLoadByMonth.value = new GenerateLoadData(preTotal);
+                    generatedLoad.value.data = [
+                        ...generatedLoad.value.data,
+                        totalLoadByMonth.value,
+                    ]
                     generateLoadForUpdate.value = doc.data() as IGenerateLoad;
                     generateLoadForUpdate.value.id = doc.id;
                 });
             } else {
-                generatedLoad.value = new GenerateLoad({} as IGenerateLoad);
+                generatedLoad.value = new GenerateLoad({
+                    date: selectedDate.value,
+                    homeId: selectedHome.value ?? 0,
+                    totalUsage: 0,
+                    data: []
+                });
                 notifyHelper.info('No generated load found for the specified month and year.');
             }
         } catch (error) {
@@ -101,6 +133,67 @@ const useLoadDetails = () => {
             isLoading.value = false;
         }
     };
+
+    const columns = [
+        createColumn({
+            key: 'roomNumber',
+            title: 'Room Id',
+            displayFormat: 'center',
+        }),
+        createColumn({
+            key: 'previousMonthKWForDisplay',
+            title: 'Previous KW',
+            displayFormat: 'center',
+        }),
+        createColumn({
+            key: 'currentMonthKWForDisplay',
+            title: 'Current KW',
+            displayFormat: 'center',
+        }),
+        createColumn({
+            key: 'usageDifferenceForDisplay',
+            title: 'Usage (kWh)',
+            displayFormat: 'center',
+        }),
+        createColumn({
+            key: 'usageAmountForDisplay',
+            title: 'Usage Amount',
+            displayFormat: 'right',
+        }),
+        createColumn({
+            key: 'extraAmountByRoomForDisplay',
+            title: 'Extra Amount',
+            displayFormat: 'right',
+        }),
+        createColumn({
+            key: 'totalAmountForDisplay',
+            title: 'Total',
+            displayFormat: 'right',
+        }),
+        // createColumn({
+        //     key: 'isPaid',
+        //     title: 'Paid',
+        //     displayFormat: 'center',
+        // }),
+        // createColumn({
+        //     key: 'paidAmountForDisplay',
+        //     title: 'Paid Amount',
+        //     displayFormat: 'right',
+        // }),
+        // createColumn({
+        //     key: 'remark',
+        //     title: 'Remark',
+        //     displayFormat: 'left',
+        // }),
+    ];
+
+    const headerTitles = [
+        ['ថ្លៃភ្លើង'],
+        ['Exported Date: ' + new Date().toLocaleDateString()]
+    ];
+    async function handleExport() {
+        exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles);
+    }
     return {
         selectedDate,
         selectedHome,
@@ -113,6 +206,7 @@ const useLoadDetails = () => {
         updateModel,
         dialogVisible,
         onSwitchChange,
+        handleExport,
     }
 };
 

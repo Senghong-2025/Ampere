@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto max-w-3xl relative">
+    <div class="mx-auto container relative">
         <div class="flex w-full mb-2 sticky top-[52px] z-30 bg-gray-200 py-2 sm:rounded-sm sm:mt-2 sm:px-2 sm:top-[58px]">
             <div class="flex w-full gap-2 overflow-x-auto flex-nowrap px-2">
                 <NuxtLink
@@ -10,7 +10,7 @@
                 </NuxtLink>
             </div>
         </div>
-        <div class="p-2 md:p-6">
+        <div class="p-2">
             <NuxtPage />
         </div>
     </div>

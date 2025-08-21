@@ -1,0 +1,160 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import * as XLSX from 'xlsx-js-style';
+
+interface ExcelColumn {
+  key: string;
+  title: string;
+  style?: XLSX.CellStyle;
+}
+
+export const exportHelper = (
+  data: Record<string, any>[],
+  columns: ExcelColumn[],
+  fileName = 'export.xlsx',
+  sheetName = 'Sheet1',
+  headerTitles: string[][] = [['Room List']]
+): void => {
+  if (!data || data.length === 0 || !columns || columns.length === 0) {
+    console.warn('⚠️ No data available to export.');
+    return;
+  }
+
+  try {
+    const headerStyle: XLSX.CellStyle = {
+      font: { bold: true, color: { rgb: 'FFFFFF' } },
+      fill: { fgColor: { rgb: '4F81BD' } },
+      alignment: { horizontal: 'center', vertical: 'center' },
+      border: {
+        top: { style: 'thin', color: { rgb: '000000' } },
+        bottom: { style: 'thin', color: { rgb: '000000' } },
+        left: { style: 'thin', color: { rgb: '000000' } },
+        right: { style: 'thin', color: { rgb: '000000' } },
+      },
+    };
+
+    const titleStyle: XLSX.CellStyle = {
+      font: { bold: true, sz: 14 , underline: true},
+      alignment: { horizontal: 'center', vertical: 'center' },
+    };
+
+    const titleRows = headerTitles.map((rowTitles) => 
+      rowTitles.map((title) => ({
+        v: title,
+        s: titleStyle
+      }))
+    );
+
+    const headers = columns.map(col => ({
+      v: col.title,
+      s: headerStyle
+    }));
+
+    const formattedData = data.map(row =>
+      columns.map(col => ({
+        v: row[col.key],
+        s: col.style || { alignment: { horizontal: 'left', vertical: 'center' } },
+      }))
+    );
+
+    const worksheetData = [...titleRows, headers, ...formattedData];
+
+    const colWidths: number[] = columns.map((col) => {
+      let maxLength = col.title.length;
+      data.forEach(row => {
+        const cellValue = String(row[col.key]);
+        maxLength = Math.max(maxLength, cellValue.length);
+      });
+      return maxLength + 2;
+    });
+
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    const merges: XLSX.Range[] = [];
+    headerTitles.forEach((rowTitles, rowIndex) => {
+      if (rowTitles.length > 0) {
+        merges.push({
+          s: { r: rowIndex, c: 0 },
+          e: { r: rowIndex, c: columns.length - 1 },
+        });
+      }
+    });
+    worksheet['!merges'] = merges;
+
+    worksheet['!cols'] = colWidths.map(width => ({ wpx: width * 6 }));
+
+    worksheet['!rows'] = Array.from({ length: worksheetData.length }, (_, index) => {
+        if (index === 0) return { hpt: 30 };
+        if (index === 1) return { hpt: 25 };
+        return { hpt: 18 };
+    });
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+    XLSX.writeFile(workbook, fileName);
+  } catch (error) {
+    console.error('❌ Error exporting to Excel:', error);
+  }
+};
+
+interface ColumnConfig {
+  key: string;
+  title: string;
+  bgColor?: string;
+  textColor?: string;
+  displayFormat?: 'left' | 'center' | 'right';
+  format?: 'number' | 'currency' | 'date' | ((value: any) => string);
+}
+
+interface ColumnConfig {
+  key: string;
+  title: string;
+  bgColor?: string;
+  textColor?: string;
+  displayFormat?: 'left' | 'center' | 'right';
+  format?: 'number' | 'currency' | 'date' | ((value: any) => string);
+}
+export const createColumn = (config: ColumnConfig) => {
+  const { key, title, bgColor, textColor, displayFormat = 'left', format } = config;
+
+  const style: XLSX.CellStyle = {
+    font: {
+      color: textColor ? { rgb: textColor } : undefined,
+      bold: textColor ? true : false,
+    },
+    fill: bgColor ? { fgColor: { rgb: bgColor } } : undefined,
+    alignment: { horizontal: displayFormat, vertical: 'center' },
+    border: {
+      top: { style: 'thin', color: { rgb: '000000' } },
+      bottom: { style: 'thin', color: { rgb: '000000' } },
+      left: { style: 'thin', color: { rgb: '000000' } },
+      right: { style: 'thin', color: { rgb: '000000' } },
+    },
+  };
+
+  return {
+    key,
+    title,
+    style,
+    format,
+  };
+};
+
+// const formatValue = (value: any, format?: 'number' | 'currency' | 'date' | ((value: any) => string)) => {
+//   if (!format) return value; 
+
+//   if (typeof format === 'function') {
+//     return format(value);
+//   }
+
+//   switch (format) {
+//     case 'number':
+//       return typeof value === 'number' ? value.toFixed(2) : value;
+//     case 'currency':
+//       return typeof value === 'number' ? `$${value.toFixed(2)}` : value;
+//     case 'date':
+//       return value instanceof Date ? value.toLocaleDateString() : value;
+//     default:
+//       return value;
+//   }
+// };

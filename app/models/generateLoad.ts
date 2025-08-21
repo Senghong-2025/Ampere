@@ -17,7 +17,7 @@ export class GenerateLoad implements IGenerateLoad {
         this.date = data.date;
         this.homeId = data.homeId;
         this.totalUsage = data.totalUsage;
-        this.data = data.data.map(item => new GenerateLoadData(item));
+        this.data = data.data.length ? data.data.map(item => new GenerateLoadData(item)) : [];
     }
 }
 export interface IGenerateLoadData {

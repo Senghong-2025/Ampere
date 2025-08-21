@@ -1,10 +1,10 @@
 <template>
-    <div class="mx-auto max-w-3xl">
+    <div class="mx-auto">
         <FormHeader title="Create Load" />
         <form class="bg-gray-200 p-2 rounded-sm" @submit.prevent="handleSubmit">
             <div class="input-form">
                 <label for="currentKW">Current (kW)</label>
-                <input id="currentKW" v-model="model.createdOn" type="date" name="currentKW" @change="getLoadListByMonth">
+                <input id="currentKW" v-model="model.createdOn" type="date" name="currentKW" @change="getLoadListByMonth()">
             </div>
             <div class="w-full flex gap-2">
                 <div class="input-form w-full">
