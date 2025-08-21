@@ -20,6 +20,7 @@ const useLoadDetails = () => {
 
     const isLoading = ref(false);
     const generatedLoad = ref<GenerateLoad>();
+    const generateLoadForUpdate = ref<IGenerateLoad>();
     const getGeneratedLoadByMonth = async () => {
         isLoading.value = true;
         try {
@@ -38,6 +39,8 @@ const useLoadDetails = () => {
                     if (generatedLoad.value) {
                         generatedLoad.value.id = doc.id;
                     }
+                    generateLoadForUpdate.value = doc.data() as IGenerateLoad;
+                    generateLoadForUpdate.value.id = doc.id;
                 });
             } else {
                 generatedLoad.value = new GenerateLoad({} as IGenerateLoad);
@@ -74,7 +77,7 @@ const useLoadDetails = () => {
     const onUpdate = async () => {
         isLoading.value = true;
         try {
-            generatedLoad.value?.data.map(v => {
+            generateLoadForUpdate.value?.data.map(v => {
                 if (v.roomNumber === clonedUpdateData.value?.roomNumber) {
                     v.currentMonthKW = clonedUpdateData.value.currentMonthKW;
                     v.previousMonthKW = clonedUpdateData.value.previousMonthKW;
@@ -88,7 +91,8 @@ const useLoadDetails = () => {
                 }
             });
             const docRef = doc($db, "generatedLoad", updatedId.value);
-            await updateDoc(docRef, { ...generatedLoad.value });
+            await updateDoc(docRef, { ...generateLoadForUpdate.value });
+            await getGeneratedLoadByMonth();
             notifyHelper.success("updated successfully.");
         } catch (error) {
             console.error("Error updating load:", error);
