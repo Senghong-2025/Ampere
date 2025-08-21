@@ -13,5 +13,7 @@ jobs:
           node-version: "20"
       - name: Install dependencies
         run: npm install
-      - name: Run build
-        run: npm run build
+      - name: build on prod
+        run: npm run build:prod
+      - name: Deploy production
+        run: npm run deploy:prod
