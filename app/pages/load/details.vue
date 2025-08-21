@@ -14,25 +14,25 @@
             </div>
         </div>
         <div v-loading="isLoading" class="overflow-x-auto bg-white rounded-lg shadow-md mt-2">
-            <table>
+            <table class="!min-w-[1000px]">
                 <thead>
                     <tr>    
-                        <th width="80">Room</th>
+                        <th width="60" class="sticky left-0 bg-gray-200">Room</th>
                         <th width="120">Previous KW</th>
-                        <th width="100">Current KW</th>
+                        <th width="120">Current KW</th>
                         <th width="80">Usage</th>
-                        <th width="130">Usage Amount</th>
+                        <th width="140">Usage Amount</th>
                         <th width="120">Extra</th>
                         <th width="80" align="center">Is Paid</th>
                         <th width="120">Paid Amount</th>
                         <th width="120">Remark</th>
-                        <th>Total</th>
-                        <th>Action</th>
+                        <th width="100" align="center">Total</th>
+                        <th width="80" align="center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(room, index) in generatedLoad?.data" :key="index">
-                        <td align="center" class="!text-blue-500 font-semibold">{{ room.roomNumber }}</td>
+                        <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">{{ room.roomNumber }}</td>
                         <td align="center">{{ room.previousMonthKW }}</td>
                         <td align="center">{{ room.currentMonthKW }}</td>
                         <td align="center">{{ room.usageDifference }}</td>
@@ -41,8 +41,8 @@
                         <td align="center">{{ room.isPaid }}</td>
                         <td align="center">{{ room.paidAmount }}</td>
                         <td>{{ room.remark }}</td>
-                        <td align="center">{{ room.totalAmount }}</td>
-                        <td>
+                        <td align="center" class="!bg-blue-400/50">{{ room.totalAmount }}</td>
+                        <td align="center">
                             <button class="text-blue-500 hover:text-blue-700 cursor-pointer" @click="editLoad(room, generatedLoad?.id ?? '')">Edit</button>
                         </td>
                     </tr>
@@ -52,7 +52,7 @@
         <el-dialog
             v-model="dialogVisible"
             title="Update Load Details"
-            width="500"
+            :width="deviceHelper.isMobile ? '90%' : '500px'"
         >
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
@@ -81,6 +81,7 @@
 </template>
 <script lang="ts" setup>
 import FormHeader from '~/components/FormHeader.vue';
+import deviceHelper from '~/helpers/deviceHelper';
 
 const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoad, isLoading, editLoad, onUpdate,
     dialogVisible,

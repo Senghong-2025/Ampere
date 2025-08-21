@@ -29,7 +29,7 @@
             <table class="w-full table-fixed">
                 <thead>
                     <tr>
-                        <th width="120" class="sticky left-0 z-20 bg-gray-200 shadow-sm">Room Number</th>
+                        <th width="60" class="sticky left-0 z-20 bg-gray-200 shadow-sm">Room</th>
                         <th width="130">Previous (KW)</th>
                         <th width="100">New (KW)</th>
                         <th width="140">Usage Difference</th>
