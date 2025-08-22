@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-screen w-full flex flex-col justify-center items-center">
-        <div class="container p-2">
+    <div class="min-h-screen flex-col flex items-center">
+        <div class="container p-2 min-h-screen">
             <slot />
         </div>
         <TheFooter class="w-full"/>

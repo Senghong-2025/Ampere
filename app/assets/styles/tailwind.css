@@ -23,7 +23,7 @@ th {
     @apply p-2 flex flex-col;
 }
 
-label[star="need"]::before {
+label[star="yes"]::before {
     content: "*";
     color: red;
     margin-right: 2px;

@@ -3,21 +3,22 @@
         <FormHeader title="Load Details" is-show-button>
             <template #button>
                <div class="flex gap-2">
-                   <TheButton1 type="primary" :loading="isLoading" name="Reload Data" @click="getGeneratedLoadByMonth()" />
-                   <TheButton1 type="primary" name="Export" @click="handleExport()" />
+                   <TheButton1 type="primary" :loading="isLoading" name="Reload Data" @click="handleChange()" />
+                   <TheButton1 type="primary" name="Export" :disabled="isLoading" @click="handleExport()" />
+                   <TheButton1 type="primary" name="Share" :disabled="isLoading" @click="handleShare()" />
                </div>
             </template>
         </FormHeader>
         <div class="filter-form flex gap-2">
             <div class="flex items-center gap-2 w-full">
                 <label for="home">Home</label>
-                <select id="home" v-model="selectedHome" class="w-full" @change="getGeneratedLoadByMonth">
+                <select id="home" v-model="selectedHome" class="w-full" @change="handleChange()">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                 </select>
             </div>
             <div class="flex items-center gap-2 w-full">
                 <label for="date">Date</label>
-                <input id="date" v-model="selectedDate" type="month" class="w-full" @change="getGeneratedLoadByMonth">
+                <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
         </div>
         <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]">
@@ -115,7 +116,6 @@ const {
     selectedDate,
     selectedHome,
     homes,
-    getGeneratedLoadByMonth,
     generatedLoad,
     isLoading,
     editLoad,
@@ -125,9 +125,11 @@ const {
     onSwitchChange,
     handleExport,
     isUpdating,
+    handleShare,
+    handleChange,
 } = useLoadDetails();
 onMounted(() => {
-    getGeneratedLoadByMonth();
+    handleChange();
 });
 const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'

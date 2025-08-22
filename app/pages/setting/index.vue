@@ -1,6 +1,5 @@
 <template>
     <div class="p-4">
-        Setting
         <TheButton1 type="primary" name="Logout" @click="handleLogout"/>
     </div>
 </template>

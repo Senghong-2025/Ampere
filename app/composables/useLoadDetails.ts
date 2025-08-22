@@ -25,6 +25,7 @@ const useLoadDetails = () => {
     const generateLoadForUpdate = ref<IGenerateLoad>();
     const totalLoadByMonth = ref<GenerateLoadData>();
     const getGeneratedLoadByMonth = async () => {
+        console.log(selectedDate.value, selectedHome.value);
         isLoading.value = true;
         try {
            const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
@@ -200,6 +201,25 @@ const useLoadDetails = () => {
     async function handleExport() {
         exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles, true, formatHorizontal);
     }
+
+    const handleShare = () => {
+            const encodedDate = btoa(selectedDate.value);
+            const encodedHome = btoa(String(selectedHome.value ?? "0"));
+        window.open(`${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`, "_blank");
+    };
+
+    const router = useRouter();
+    const handleChange = () => {
+        const encodedDate = btoa(selectedDate.value);
+        const encodedHome = btoa(String(selectedHome.value ?? "0"));
+        router.replace({
+            query: {
+                d: encodedDate,
+                h: encodedHome,
+            },
+        });
+        getGeneratedLoadByMonth();
+    };
     return {
         selectedDate,
         selectedHome,
@@ -214,6 +234,8 @@ const useLoadDetails = () => {
         onSwitchChange,
         handleExport,
         isUpdating,
+        handleShare,
+        handleChange,
     }
 };
 

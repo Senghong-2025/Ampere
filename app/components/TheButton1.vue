@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button :class="buttonClasses" class="cursor-pointer" :disabled="loading" @click="$emit('click')">
+        <button :class="buttonClasses" class="cursor-pointer" @click="$emit('click')">
             <div class="flex items-center gap-2">
                 <svg
                     v-if="loading"
@@ -36,6 +36,7 @@ const props = defineProps<{
     name: string;
     type: ButtonType;
     loading?: boolean;
+    disabled?: boolean;
 }>();
 
 defineEmits<{
