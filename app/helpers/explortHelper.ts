@@ -12,7 +12,9 @@ export const exportHelper = (
   columns: ExcelColumn[],
   fileName = 'export.xlsx',
   sheetName = 'Sheet1',
-  headerTitles: string[][] = [['Room List']]
+  headerTitles: string[][] = [['Room List']],
+  isFooter?: boolean,
+  formatHorizontal?: (colIndex: number) => 'left' | 'center' | 'right'
 ): void => {
   if (!data || data.length === 0 || !columns || columns.length === 0) {
     console.warn('⚠️ No data available to export.');
@@ -33,11 +35,12 @@ export const exportHelper = (
     };
 
     const titleStyle: XLSX.CellStyle = {
-      font: { bold: true, sz: 14 , underline: true},
+      font: { bold: true, sz: 14, underline: true, color: { rgb: 'FFFFFF' } },
       alignment: { horizontal: 'center', vertical: 'center' },
+      fill: { fgColor: { rgb: 'D4001D' } },
     };
 
-    const titleRows = headerTitles.map((rowTitles) => 
+    const titleRows = headerTitles.map((rowTitles) =>
       rowTitles.map((title) => ({
         v: title,
         s: titleStyle
@@ -49,11 +52,24 @@ export const exportHelper = (
       s: headerStyle
     }));
 
-    const formattedData = data.map(row =>
-      columns.map(col => ({
-        v: row[col.key],
-        s: col.style || { alignment: { horizontal: 'left', vertical: 'center' } },
-      }))
+    const formattedData = data.map((row, index) =>
+      columns.map((col, colIndex) => {
+        const lastRow = index === data.length - 1;
+        return {
+          v: row[col.key],
+          s: {
+            fill: { fgColor: { rgb: lastRow ? 'D4001D' : 'FFFFFF' } },
+            font: { bold: false, color: { rgb: lastRow ? 'FFFFFF' : '000000' } },
+            alignment: { horizontal: formatHorizontal ? formatHorizontal(colIndex) : 'center', vertical: 'center' },
+            border: {
+              top: { style: 'thin', color: { rgb: '000000' } },
+              bottom: { style: 'thin', color: { rgb: '000000' } },
+              left: { style: 'thin', color: { rgb: '000000' } },
+              right: { style: 'thin', color: { rgb: '000000' } },
+            },
+          },
+        };
+      })
     );
 
     const worksheetData = [...titleRows, headers, ...formattedData];
@@ -83,9 +99,10 @@ export const exportHelper = (
     worksheet['!cols'] = colWidths.map(width => ({ wpx: width * 6 }));
 
     worksheet['!rows'] = Array.from({ length: worksheetData.length }, (_, index) => {
-        if (index === 0) return { hpt: 30 };
-        if (index === 1) return { hpt: 25 };
-        return { hpt: 18 };
+      if (index === 0) return { hpt: 30 };
+      if (index === 1 || index === 2) return { hpt: 25 };
+      if (isFooter && index === worksheetData.length - 1) return { hpt: 25 };
+      return { hpt: 18 };
     });
 
     const workbook = XLSX.utils.book_new();

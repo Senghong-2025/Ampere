@@ -52,10 +52,9 @@ const useLoadDetails = () => {
                         totalAmount: 0
                     };
                     generatedLoad.value.data.forEach((val) => {
-                        preTotal.roomNumber = 0;
-                        preTotal.currentMonthKW += 0;
-                        preTotal.previousMonthKW += 0;
-                        preTotal.hasUsageThisMonth = false;
+                        preTotal.roomNumber = 'Total' as unknown as number;
+                        preTotal.currentMonthKW += val.currentMonthKW;
+                        preTotal.previousMonthKW += val.previousMonthKW;
                         preTotal.usageDifference += val.usageDifference;
                         preTotal.usageAmount += val.usageAmount;
                         preTotal.extraAmountByRoom += val.extraAmountByRoom;
@@ -189,10 +188,15 @@ const useLoadDetails = () => {
 
     const headerTitles = [
         ['ថ្លៃភ្លើង'],
-        ['Exported Date: ' + new Date().toLocaleDateString()]
+        [`Exported Date: ` + new Date().toLocaleDateString()]
     ];
+    const formatHorizontal = (colIndex: number) => {
+        if([1,2,3].includes(colIndex)) return 'left';
+        if([4,5,6].includes(colIndex)) return 'right';
+        return 'center';
+    };
     async function handleExport() {
-        exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles);
+        exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles, true, formatHorizontal);
     }
     return {
         selectedDate,
