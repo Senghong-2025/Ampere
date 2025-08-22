@@ -8,7 +8,7 @@
         <div class="filter-form flex gap-2">
             <div class="flex items-center gap-2 w-full">
                 <label for="home">Home</label>
-                <select id="home" v-model="selectedHome" class="w-full">
+                <select id="home" v-model="selectedHome" class="w-full" @change="getGeneratedLoadByMonth">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                 </select>
             </div>

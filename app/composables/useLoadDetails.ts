@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { rooms } from './../assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
@@ -24,6 +24,7 @@ const useLoadDetails = () => {
     const generateLoadForUpdate = ref<IGenerateLoad>();
     const totalLoadByMonth = ref<GenerateLoadData>();
     const getGeneratedLoadByMonth = async () => {
+        console.log('se', selectedHome.value);
         isLoading.value = true;
         try {
             const [year, month] = selectedDate.value.split('-');
@@ -31,8 +32,10 @@ const useLoadDetails = () => {
             const endDate = `${year}-${month}-31`;
             const q = query(
                 collection($db, "generatedLoad"),
+                where("homeId", "==", selectedHome.value ?? 0),
                 where("date", ">=", startDate),
-                where("date", "<=", endDate)
+                where("date", "<=", endDate),
+                limit(1)
             );
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {

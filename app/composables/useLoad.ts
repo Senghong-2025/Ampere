@@ -1,6 +1,6 @@
 import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { formatInputDate, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
 import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
@@ -62,7 +62,8 @@ const useLoad = () => {
         try {
             const q = query(
                 collection($db, "load"),
-                where("homeId", "==", Number(selectedHome.value))
+                where("homeId", "==", Number(selectedHome.value)),
+                limit(50),
             );
             const snapshot = await getDocs(q);
             const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === ( !isDefault ? month : getMonthOnly(new Date(model.createdOn))));

@@ -16,11 +16,13 @@ const useRoom = () => {
             return matchesHome && room.floor === Number(selectedFloor.value);
         });
     });
+    const test = JSON.stringify(rooms);
     return {
         filteredRooms,
         selectedFloor,
         selectedHome,
         uniqueHome,
+        test
     }
 }
 export default useRoom;
