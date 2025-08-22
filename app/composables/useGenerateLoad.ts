@@ -13,11 +13,11 @@ export interface IGenerateRequest {
 }
 const useGenerateLoad = () => {
     const { $db } = useNuxtApp();
-    const { getLoadListByMonth, homes, selectedHome } = useLoad();
+    const { getLoadListByMonth, homes } = useLoad();
     const isLoading = ref(false);
     const model = reactive<IGenerateRequest>({
         date: formatInputDate(new Date()),
-        homeId: selectedHome.value ?? 0,
+        homeId: homes[0] ?? 0,
         usageAmount: 0,
         totalUsage: 0,
         extraAmount: 0,
@@ -54,8 +54,8 @@ const useGenerateLoad = () => {
         isLoading.value = true;
         try {
             const [currentData, lastMonthData] = await Promise.all([
-                getLoadListByMonth(thisMonth.value, false),
-                getLoadListByMonth(lastMonth.value, false),
+                getLoadListByMonth(thisMonth.value, false, model.homeId),
+                getLoadListByMonth(lastMonth.value, false, model.homeId),
             ]);
             const createLoadData:IGenerateLoadData[] = [];
             const loadData: GenerateLoadData[]  = (currentData ?? []).map((item) => {
@@ -108,11 +108,10 @@ const useGenerateLoad = () => {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
                 collection($db, "generatedLoad"),
-                where("homeId", "==", Number(model.homeId))
+                where("homeId", "==", model.homeId)
             );
 
             const snapshot = await getDocs(q);
-
             const existingData = snapshot.docs.filter(doc => {
                 const data = doc.data();
                 return data.date >= startDate && data.date <= endDate;
@@ -132,7 +131,7 @@ const useGenerateLoad = () => {
     };
 
     const onReset = () => {
-       model.homeId = selectedHome.value ?? 0;
+       model.homeId = homes[0] ?? 0;
        model.usageAmount = 0;
        model.totalUsage = 0;
        generateLoad.value = new GenerateLoad({
@@ -150,7 +149,6 @@ const useGenerateLoad = () => {
         isShowPreview,
         homes,
         onSave,
-        selectedHome,
         onReset,
     };
 };

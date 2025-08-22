@@ -1,6 +1,6 @@
 /* Add table styles */
 table {
-  @apply w-full border border-gray-300 border-collapse border-spacing-0;
+    @apply w-full border border-gray-300 border-collapse border-spacing-0;
 }
 
 thead tr {
@@ -21,6 +21,12 @@ th {
 
 .input-form {
     @apply p-2 flex flex-col;
+}
+
+label[star="need"]::before {
+    content: "*";
+    color: red;
+    margin-right: 2px;
 }
 
 .input-form input,

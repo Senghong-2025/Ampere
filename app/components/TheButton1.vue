@@ -45,7 +45,7 @@ defineEmits<{
 const buttonClasses = computed(() => {
     const baseClasses = 'px-4 py-2 rounded font-medium transition-colors duration-200';
     const typeClasses: Record<ButtonType, string> = {
-        primary: 'bg-blue-500 text-white hover:bg-blue-600',
+        primary: 'bg-red-700 text-white hover:bg-red-600',
         secondary: 'bg-gray-500 text-white hover:bg-gray-600',
         tertiary: 'bg-red-800/70 text-white hover:bg-red-900',
         quaternary: 'bg-purple-500 text-white hover:bg-purple-600',

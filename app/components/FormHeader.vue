@@ -3,7 +3,7 @@
         <div>
             <h2 class="text-xl font-semibold">{{ title }}</h2>
         </div>
-        <div v-if="isShowButton" class="ml-4 bg-gray-100 h-full rounded-sm">
+        <div v-if="isShowButton" class="ml-4 h-full rounded-sm">
             <slot name="button" />
         </div>
     </div>

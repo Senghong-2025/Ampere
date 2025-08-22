@@ -8,7 +8,7 @@
             </div>
             <div class="input-form">
                 <label for="homeId">Home</label>
-                <select id="homeId" v-model="selectedHome" name="homeId">
+                <select id="homeId" v-model="model.homeId" name="homeId">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                 </select>
             </div>
@@ -69,5 +69,5 @@
 </template>
 <script lang="ts" setup>
 import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
-const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, selectedHome, onReset } = useGenerateLoad();
+const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset } = useGenerateLoad();
 </script>

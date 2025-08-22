@@ -111,6 +111,9 @@
 import FormHeader from '~/components/FormHeader.vue';
 import type { GenerateLoadData } from '~/models/generateLoad';
 
+definePageMeta({
+  layout: 'share'
+})
 const {
     selectedDate,
     selectedHome,

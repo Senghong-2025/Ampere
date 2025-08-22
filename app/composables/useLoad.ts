@@ -58,14 +58,14 @@ const useLoad = () => {
     };
 
     const loadList = ref<ILoadResponse[]>([]);
-    const getLoadListByMonth = async (date?: Date, isDefault: boolean = true) => {
+    const getLoadListByMonth = async (date?: Date, isDefault: boolean = true,  homeId?: number) => {
         isLoading.value = true;
         const selectedDate = computed(() => model.createdOn);
         const { startDate, endDate } = getStartAndEndOfMonth(isDefault ? new Date(selectedDate.value) : date ?? new Date());
         try {
             const q = query(
                 collection($db, "load"),
-                where("homeId", "==", Number(selectedHome.value)),
+                where("homeId", "==", isDefault ? Number(selectedHome.value) : homeId),
                 where("createdOn", ">=", startDate),
                 where("createdOn", "<=", endDate),
                 limit(50)

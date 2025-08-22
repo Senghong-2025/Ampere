@@ -1,14 +1,9 @@
 <template>
-  <div class="w-full relative">
-    <TheHeader />
-    <div class="min-h-[calc(100vh-60px)] w-full mb-4">
-      <NuxtPage />
-    </div>
-    <TheFooter />
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 <script lang="ts" setup>
-import TheHeader from './components/TheHeader.vue';
 useHead({
   title: "Ampere",
   link: [
