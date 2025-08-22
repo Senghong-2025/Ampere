@@ -1,3 +1,5 @@
+import { accountingWithoutRoundUp } from "@/helpers/textFormatHelper";
+
 export interface IGenerateLoad {
     id?: string;
     date: string;                    // Report date (ISO string)
@@ -90,7 +92,7 @@ export class GenerateLoadData implements IGenerateLoadData {
     }
 
     private formatCurrency(value: number): string {
-        return `${value.toLocaleString()} ៛`
+        return `${accountingWithoutRoundUp(value)} ៛`
     }
 
     private formatKw(value: number): string {

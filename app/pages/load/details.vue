@@ -44,7 +44,7 @@
                         <td :align=" isTotalRow(index) ? 'center' : 'left'" :colspan="isTotalRow(index) ? 2 : 1">{{ isTotalRow(index) ? '--' : room.previousMonthKWForDisplay }}</td>
                         <td align="left" :hidden="isTotalRow(index)">{{ room.currentMonthKWForDisplay }}</td>
                         <td align="left" class="!text-red-600">{{ room.usageDifferenceForDisplay }}</td>
-                        <td align="right">{{isTotalRow(index) ? '--' :room.usageAmountForDisplay }}</td>
+                        <td align="right">{{ room.usageAmountForDisplay }}</td>
                         <td align="center">{{ room.extraAmountByRoomForDisplay }}</td>
                         <td align="center">
                             <span v-if="room.isPaid">
