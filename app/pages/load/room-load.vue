@@ -3,8 +3,8 @@
         <FormHeader title="Room Load" />
         <div class="flex gap-2 w-full">
             <div class="flex items-center gap-2 my-2 w-full">
-                <label for="currentKW" class="w-32">Filter Month</label>
-                <select id="home" v-model="selectedHome" name="home" class="w-full" @change="onMonthChange">
+                <label for="currentKW" class="w-32">Filter Home</label>
+                <select id="home" v-model="selectedHome" name="home" class="w-full" @change="getLoadListByMonth()">
                     <option v-for="home in homes" :key="home" :value="home">{{ 'Home ' + home }}</option>
                 </select>
             </div>
@@ -14,7 +14,7 @@
                     id="currentKW"
                     v-model="model.createdOn"
                     type="date" name="currentKW" class="w-full"
-                    @change="onMonthChange">
+                    @change="getLoadListByMonth()">
             </div>
         </div>
         <div class="overflow-x-auto bg-white rounded-lg shadow-md relative">
@@ -24,28 +24,18 @@
                         <th>Room Number</th>
                         <th>Total KW for <span class="text-blue-600">{{ getMonthOnly(new Date(model.createdOn))
                                 }}</span></th>
+                        <th>Created On</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-if="isLoading">
-                        <tr v-for="(room, index) in 5" :key="index">
-                            <td class="px-4">
-                                <div class="w-16 animate-pulse rounded bg-gray-200 h-[20px]" />
-                            </td>
-                            <td class="px-4">
-                                <div class="w-24 animate-pulse rounded bg-gray-200 h-[20px]" />
-                            </td>
-                            <td class="px-4">
-                                <div class="w-24 animate-pulse rounded bg-gray-200 h-[20px]" />
-                            </td>
-                        </tr>
-                    </template>
+                    <TableLoading v-if="isLoading" :row="5" :column="4" />
                     <template v-else>
                         <tr v-for="(room, index) in loadList.sort((a, b) => a.roomNumber - b.roomNumber)" :key="index">
                             <td class="font-semibold !text-blue-500">{{ room.roomNumber }}</td>
                             <td class="font-semibold !text-red-500">{{ room.currentKW }} (KW)</td>
-                            <td>
+                            <td>{{ room.createdOn }}</td>
+                            <td align="center">
                                 <button
                                     class="text-blue-500 hover:underline"
                                     @click="$router.push({ path: '/load/update', query: { id: room.id } })"
@@ -63,11 +53,6 @@ import FormHeader from '~/components/FormHeader.vue';
 import { getMonthOnly } from '~/helpers/dateTimeHelper';
 
 const { getLoadListByMonth, loadList, isLoading, model, selectedHome, homes } = useLoad();
-
-function onMonthChange(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    getLoadListByMonth(value);
-}
 
 onMounted(() => {
     getLoadListByMonth();

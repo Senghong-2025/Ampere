@@ -17,9 +17,7 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="getGeneratedLoadByMonth">
             </div>
         </div>
-        <div
-            v-loading="isLoading"
-            class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]">
             <table class="!min-w-[1200px]">
                 <thead>
                     <tr>
@@ -37,7 +35,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(room, index) in generatedLoad?.data" :key="index" :class="{'bg-gray-100 font-semibold': isTotalRow(index)}">
+                    <TableLoading v-if="isLoading" :row="5" :column="11" />
+                    <tr v-for="(room, index) in generatedLoad?.data" v-else :key="index" :class="{'bg-gray-100 font-semibold': isTotalRow(index)}">
                         <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">
                            <span> {{ isTotalRow(index) ? 'Total' : room.roomNumber }}</span>
                         </td>

@@ -1,5 +1,5 @@
 import { type IGenerateLoadData, GenerateLoad, GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
-import { formatInputDate, getMonthOnly } from './../helpers/dateTimeHelper';
+import { formatInputDate, getStartAndEndOfMonth } from './../helpers/dateTimeHelper';
 import notifyHelper from '~/helpers/notifyHelper';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import type { ILoadResponse } from '~/models/load';
@@ -25,13 +25,12 @@ const useGenerateLoad = () => {
 
     const selectedDate = computed(() => model.date);
     const thisMonth = computed(() => {
-        const d = new Date(selectedDate.value);
-        return getMonthOnly(d);
+        return new Date(selectedDate.value);
     });
 
     const lastMonth = computed(() => {
         const d = new Date(selectedDate.value);
-        return getMonthOnly(new Date(d.getFullYear(), d.getMonth() - 1, 1));
+        return new Date(d.getFullYear(), d.getMonth() - 1, 1);
     });
 
     const convertExtraAmount = (amount: number, load: ILoadResponse) => {
@@ -54,9 +53,10 @@ const useGenerateLoad = () => {
         }
         isLoading.value = true;
         try {
-            const currentData = await getLoadListByMonth(thisMonth.value, false);
-            const lastMonthData = await getLoadListByMonth(lastMonth.value, false);
-
+            const [currentData, lastMonthData] = await Promise.all([
+                getLoadListByMonth(thisMonth.value, false),
+                getLoadListByMonth(lastMonth.value, false),
+            ]);
             const createLoadData:IGenerateLoadData[] = [];
             const loadData: GenerateLoadData[]  = (currentData ?? []).map((item) => {
                 const lastMonthItem = lastMonthData?.find(
@@ -105,11 +105,7 @@ const useGenerateLoad = () => {
     const onSave = async () => {
         isLoading.value = true;
         try {
-            const [year, month] = formatInputDate(new Date(selectedDate.value)).split('-');
-
-            const lastDay = new Date(Number(year), Number(month), 0).getDate();
-            const startDate = `${year}-${month}-01`;
-            const endDate = `${year}-${month}-${String(lastDay).padStart(2, "0")}`;
+            const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
                 collection($db, "generatedLoad"),
                 where("homeId", "==", Number(model.homeId))

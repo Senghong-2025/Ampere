@@ -15,3 +15,13 @@ export const formatInputDate = (date: Date) => {
 export const formatInputDateTime = (date: Date) => {
     return format(date, 'yyyy-MM-dd HH:mm:ss');
 };
+
+export const getStartAndEndOfMonth = (selectedDate: Date) => {
+    const [year, month] = formatInputDate(selectedDate).split('-');
+    const startDate = `${year}-${month}-01`;
+    const endDate = `${year}-${month}-31`;
+    return {
+        endDate,
+        startDate,
+    }
+}

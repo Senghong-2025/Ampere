@@ -3,6 +3,7 @@ import { rooms } from './../assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
 import { createColumn, exportHelper } from '~/helpers/explortHelper';
+import { getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 
 interface IUpdateModel {
     roomNumber: string;
@@ -24,12 +25,9 @@ const useLoadDetails = () => {
     const generateLoadForUpdate = ref<IGenerateLoad>();
     const totalLoadByMonth = ref<GenerateLoadData>();
     const getGeneratedLoadByMonth = async () => {
-        console.log('se', selectedHome.value);
         isLoading.value = true;
         try {
-            const [year, month] = selectedDate.value.split('-');
-            const startDate = `${year}-${month}-01`;
-            const endDate = `${year}-${month}-31`;
+           const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
                 collection($db, "generatedLoad"),
                 where("homeId", "==", selectedHome.value ?? 0),

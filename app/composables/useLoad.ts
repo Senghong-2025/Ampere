@@ -1,7 +1,7 @@
 import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
 import { addDoc, collection, doc, getDoc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
-import { formatInputDate, getMonthAndYearOnly, getMonthOnly } from "~/helpers/dateTimeHelper";
+import { formatInputDate, getMonthAndYearOnly, getStartAndEndOfMonth } from "~/helpers/dateTimeHelper";
 import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
     const { $db } = useNuxtApp();
@@ -39,7 +39,6 @@ const useLoad = () => {
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => doc.data());
         const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date(model.createdOn))));
-        console.log("Existing Value:", existingValue.value);
         if (existingValue.value) {
             isLoading.value = false;
             notifyHelper.error("This already existing data");
@@ -59,17 +58,20 @@ const useLoad = () => {
     };
 
     const loadList = ref<ILoadResponse[]>([]);
-    const getLoadListByMonth = async (month?: string, isDefault: boolean = true) => {
+    const getLoadListByMonth = async (date?: Date, isDefault: boolean = true) => {
         isLoading.value = true;
+        const selectedDate = computed(() => model.createdOn);
+        const { startDate, endDate } = getStartAndEndOfMonth(isDefault ? new Date(selectedDate.value) : date ?? new Date());
         try {
             const q = query(
                 collection($db, "load"),
                 where("homeId", "==", Number(selectedHome.value)),
-                limit(50),
+                where("createdOn", ">=", startDate),
+                where("createdOn", "<=", endDate),
+                limit(50)
             );
             const snapshot = await getDocs(q);
-            const dataByMonth = snapshot.docs.filter((d) => getMonthOnly(d.data().createdOn) === ( !isDefault ? month : getMonthOnly(new Date(model.createdOn))));
-            loadList.value = dataByMonth.map(doc => {
+            loadList.value = snapshot.docs.map(doc => {
                 const data = doc.data() as ILoadResponse;
                 return {
                     ...data,
