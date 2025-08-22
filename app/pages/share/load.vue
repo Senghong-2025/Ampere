@@ -5,6 +5,7 @@
                 <div class="flex gap-1">
                     <TheButton1 type="primary" :loading="isLoading" name="Reload" @click="getGeneratedLoadByMonth()" />
                     <TheButton1 type="primary" name="Export" @click="handleExport()" />
+                    <TheButton1 type="primary" name="Share" :disabled="isLoading" @click="handleShare()" />
                 </div>
             </template>
         </FormHeader>
@@ -20,9 +21,9 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
         </div>
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]" style="height: calc(100dvh - 230px)">
             <table class="!min-w-[1200px]">
-                <thead>
+                <thead class="sticky top-0 z-10 bg-white">
                     <tr>
                         <th width="60" class="sticky left-0 bg-gray-200">Room</th>
                         <th width="120">Previous KW</th>
@@ -65,10 +66,12 @@
                 </tbody>
             </table>
         </div>
+        <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @open="handleOpenLink" />
     </div>
 </template>
 <script lang="ts" setup>
-import FormHeader from '~/components/FormHeader.vue';
+import FormHeader from '@/components/FormHeader.vue';
+import CopyLink from '@/composables/load/CopyLink.vue';
 import type { GenerateLoadData } from '~/models/generateLoad';
 
 definePageMeta({
@@ -83,6 +86,10 @@ const {
     isLoading,
     handleExport,
     handleChange,
+    shareUrl,
+    shareVisible,
+    handleShare,
+    handleOpenLink,
 } = useLoadDetails();
 
 onMounted(() => getGeneratedLoadByMonth());

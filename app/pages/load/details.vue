@@ -106,7 +106,7 @@
                 </div>
             </template>
         </el-dialog>
-        <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @click="handleChange" />
+        <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @open="handleOpenLink" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -131,6 +131,7 @@ const {
     handleChange,
     shareVisible,
     shareUrl,
+    handleOpenLink,
 } = useLoadDetails();
 const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'

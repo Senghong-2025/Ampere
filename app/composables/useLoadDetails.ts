@@ -211,7 +211,6 @@ const useLoadDetails = () => {
         const encodedHome = btoa(String(selectedHome.value ?? "0"));
         shareVisible.value = true;
         shareUrl.value = `${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`;
-        // window.open(url, "_blank");
     };
 
     const handleChange = () => {
@@ -237,6 +236,11 @@ const useLoadDetails = () => {
         },
         { immediate: true }
     );
+
+    const handleOpenLink = () => {
+        window.open(shareUrl.value, "_blank");
+        shareVisible.value = false;
+    };
     return {
         selectedDate,
         selectedHome,
@@ -255,6 +259,7 @@ const useLoadDetails = () => {
         handleChange,
         shareVisible,
         shareUrl,
+        handleOpenLink,
     }
 };
 

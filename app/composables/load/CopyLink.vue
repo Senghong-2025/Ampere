@@ -4,9 +4,12 @@
             <div class="text-[12px] font-semibold">🔗 Share the Load Details </div>
         </template>
         <template #default>
-            <div class="bg-gray-100 rounded-sm p-1 flex gap-1 items-center">
-                <div class="text-[12px] text-blue-600">{{ shareUrl }}</div>
+            <div class="bg-gray-100 rounded-sm p-1 flex gap-1 items-center overflow-hidden">
+                <div class="text-[12px] text-blue-600 truncate">{{ shareUrl }}</div>
+            </div>
+            <div class="flex justify-end gap-1 mt-2">
                 <TheButton1 type="info" name="Copy" @click="handleCopy" />
+                <TheButton1 type="info" name="Open" @click="$emit('open')" />
             </div>
         </template>
     </el-dialog>
@@ -23,7 +26,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     (e: 'update:shareVisible', val: boolean): void;
-    (e: 'close'): void;
+    (e: 'close' | 'open'): void;
 }>();
 
 const model = computed({
