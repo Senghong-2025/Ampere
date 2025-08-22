@@ -35,7 +35,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <TableLoading v-if="isLoading" :row="5" :column="11" />
+                    <TableLoading v-if="isLoading" :row="10" :column="11" />
                     <tr v-for="(room, index) in generatedLoad?.data" v-else :key="index" :class="{'bg-gray-100 font-semibold': isTotalRow(index)}">
                         <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">
                            <span> {{ isTotalRow(index) ? 'Total' : room.roomNumber }}</span>
@@ -96,7 +96,7 @@
             <template #footer>
                 <div class="dialog-footer">
                     <el-button @click="dialogVisible = false">Cancel</el-button>
-                    <el-button type="primary" :loading="isLoading" @click="onUpdate">
+                    <el-button type="primary" :loading="isUpdating" @click="onUpdate">
                         Update
                     </el-button>
                 </div>
@@ -108,11 +108,20 @@
 import FormHeader from '~/components/FormHeader.vue';
 import type { GenerateLoadData } from '~/models/generateLoad';
 
-const { selectedDate, selectedHome, homes, getGeneratedLoadByMonth, generatedLoad, isLoading, editLoad, onUpdate,
+const {
+    selectedDate,
+    selectedHome,
+    homes,
+    getGeneratedLoadByMonth,
+    generatedLoad,
+    isLoading,
+    editLoad,
+    onUpdate,
     dialogVisible,
     updateModel,
     onSwitchChange,
     handleExport,
+    isUpdating,
 } = useLoadDetails();
 onMounted(() => {
     getGeneratedLoadByMonth();
@@ -121,7 +130,7 @@ const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'
     if (!room.isPaid && (room.paidAmount ?? 0) > 0) return '!bg-yellow-500'
     return '!bg-red-300'
-}
+};
 const isTotalRow = (index: number) => {
   return generatedLoad.value?.data && index === generatedLoad.value.data.length - 1;
 };

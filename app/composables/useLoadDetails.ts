@@ -106,8 +106,9 @@ const useLoadDetails = () => {
         updateModel.paidAmount = updateModel.isPaid ? total : 0;
     };
 
+    const isUpdating = ref(false);
     const onUpdate = async () => {
-        isLoading.value = true;
+        isUpdating.value = true;
         try {
             generateLoadForUpdate.value?.data.map(v => {
                 if (v.roomNumber === clonedUpdateData.value?.roomNumber) {
@@ -130,7 +131,7 @@ const useLoadDetails = () => {
             console.error("Error updating load:", error);
         } finally {
             dialogVisible.value = false;
-            isLoading.value = false;
+            isUpdating.value = false;
         }
     };
 
@@ -212,6 +213,7 @@ const useLoadDetails = () => {
         dialogVisible,
         onSwitchChange,
         handleExport,
+        isUpdating,
     }
 };
 

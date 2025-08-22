@@ -25,7 +25,7 @@
                         <th>Total KW for <span class="text-blue-600">{{ getMonthOnly(new Date(model.createdOn))
                                 }}</span></th>
                         <th>Created On</th>
-                        <th>Action</th>
+                        <th width="100">Action</th>
                     </tr>
                 </thead>
                 <tbody>
