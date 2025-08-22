@@ -2,11 +2,11 @@
     <div class="w-full">
         <FormHeader title="Load Details" is-show-button>
             <template #button>
-               <div class="flex gap-2">
-                   <TheButton1 type="primary" :loading="isLoading" name="Reload Data" @click="handleChange()" />
-                   <TheButton1 type="primary" name="Export" :disabled="isLoading" @click="handleExport()" />
-                   <TheButton1 type="primary" name="Share" :disabled="isLoading" @click="handleShare()" />
-               </div>
+                <div class="flex gap-1">
+                    <TheButton1 type="primary" :loading="isLoading" name="Reload" @click="handleChange()" />
+                    <TheButton1 type="primary" name="Export" :disabled="isLoading" @click="handleExport()" />
+                    <TheButton1 type="primary" name="Share" :disabled="isLoading" @click="handleShare()" />
+                </div>
             </template>
         </FormHeader>
         <div class="filter-form flex gap-2">
@@ -40,11 +40,13 @@
                 </thead>
                 <tbody>
                     <TableLoading v-if="isLoading" :row="10" :column="11" />
-                    <tr v-for="(room, index) in generatedLoad?.data" v-else :key="index" :class="{'bg-gray-100 font-semibold': isTotalRow(index)}">
+                    <tr v-for="(room, index) in generatedLoad?.data" v-else :key="index"
+                        :class="{ 'bg-gray-100 font-semibold': isTotalRow(index) }">
                         <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">
-                           <span> {{ isTotalRow(index) ? 'Total' : room.roomNumber }}</span>
+                            <span> {{ isTotalRow(index) ? 'Total' : room.roomNumber }}</span>
                         </td>
-                        <td :align=" isTotalRow(index) ? 'center' : 'left'" :colspan="isTotalRow(index) ? 2 : 1">{{ isTotalRow(index) ? '--' : room.previousMonthKWForDisplay }}</td>
+                        <td :align="isTotalRow(index) ? 'center' : 'left'" :colspan="isTotalRow(index) ? 2 : 1">{{
+                            isTotalRow(index) ? '--' : room.previousMonthKWForDisplay }}</td>
                         <td align="left" :hidden="isTotalRow(index)">{{ room.currentMonthKWForDisplay }}</td>
                         <td align="left" class="!text-red-600">{{ room.usageDifferenceForDisplay }}</td>
                         <td align="right">{{ room.usageAmountForDisplay }}</td>
@@ -56,14 +58,13 @@
                             <span v-else> -- </span>
                         </td>
                         <td align="right">{{ room.paidAmountForDisplay }}</td>
-                        <td align="right" class="font-semibold" :class="!isTotalRow(index)? `${getStatusClass(room)} !text-white` : '!text-blue-500'">
+                        <td align="right" class="font-semibold"
+                            :class="!isTotalRow(index) ? `${getStatusClass(room)} !text-white` : '!text-blue-500'">
                             {{ room.totalAmountForDisplay }}
                         </td>
                         <td>{{ room.remark }}</td>
                         <td align="center">
-                            <button
-                                v-if="!isTotalRow(index)"
-                                class="text-blue-500 hover:text-blue-700 cursor-pointer"
+                            <button v-if="!isTotalRow(index)" class="text-blue-500 hover:text-blue-700 cursor-pointer"
                                 @click="editLoad(room, generatedLoad?.id ?? '')">
                                 Edit
                             </button>
@@ -77,13 +78,12 @@
             <div class="text-gray-500 bg-blue-200 p-2 rounded-md mb-2">
                 Update the load details for the selected home and date room number: <span
                     class="text-blue-600 font-bold">{{
-                    updateModel.roomNumber }}</span>
+                        updateModel.roomNumber }}</span>
             </div>
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
                     <label for="isPaid" class="w-[150px]">Is Paid</label>
-                    <input
-                        id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1"
+                    <input id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1"
                         @change="onSwitchChange">
                 </div>
 
@@ -106,10 +106,12 @@
                 </div>
             </template>
         </el-dialog>
+        <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @click="handleChange" />
     </div>
 </template>
 <script lang="ts" setup>
-import FormHeader from '~/components/FormHeader.vue';
+import FormHeader from '@/components/FormHeader.vue';
+import CopyLink from '@/composables/load/CopyLink.vue';
 import type { GenerateLoadData } from '~/models/generateLoad';
 
 const {
@@ -127,6 +129,8 @@ const {
     isUpdating,
     handleShare,
     handleChange,
+    shareVisible,
+    shareUrl,
 } = useLoadDetails();
 const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'
@@ -134,6 +138,6 @@ const getStatusClass = (room: GenerateLoadData) => {
     return '!bg-red-300'
 };
 const isTotalRow = (index: number) => {
-  return generatedLoad.value?.data && index === generatedLoad.value.data.length - 1;
+    return generatedLoad.value?.data && index === generatedLoad.value.data.length - 1;
 };
 </script>

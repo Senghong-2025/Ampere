@@ -37,3 +37,11 @@ body {
 button:disabled {
   @apply opacity-50 cursor-not-allowed;
 }
+
+.el-dialog {
+  background-color: var(--bg1) !important;
+  padding: 8px !important;
+}
+.el-dialog__header {
+  padding-bottom: 8px !important;
+}

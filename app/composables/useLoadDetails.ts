@@ -204,10 +204,14 @@ const useLoadDetails = () => {
 
     const router = useRouter();
     const route = useRoute();
+    const shareVisible = ref(false);
+    const shareUrl = ref('');
     const handleShare = () => {
         const encodedDate = btoa(selectedDate.value);
         const encodedHome = btoa(String(selectedHome.value ?? "0"));
-        window.open(`${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`, "_blank");
+        shareVisible.value = true;
+        shareUrl.value = `${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`;
+        // window.open(url, "_blank");
     };
 
     const handleChange = () => {
@@ -249,6 +253,8 @@ const useLoadDetails = () => {
         isUpdating,
         handleShare,
         handleChange,
+        shareVisible,
+        shareUrl,
     }
 };
 

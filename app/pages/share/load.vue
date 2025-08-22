@@ -2,9 +2,8 @@
     <div class="w-full">
         <FormHeader title="Load Details" is-show-button>
             <template #button>
-                <div class="flex gap-2">
-                    <TheButton1 type="primary" :loading="isLoading" name="Reload Data"
-                        @click="getGeneratedLoadByMonth()" />
+                <div class="flex gap-1">
+                    <TheButton1 type="primary" :loading="isLoading" name="Reload" @click="getGeneratedLoadByMonth()" />
                     <TheButton1 type="primary" name="Export" @click="handleExport()" />
                 </div>
             </template>

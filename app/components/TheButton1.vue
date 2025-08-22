@@ -1,7 +1,7 @@
 <template>
     <div>
         <button :class="buttonClasses" class="cursor-pointer" @click="$emit('click')">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center">
                 <svg
                     v-if="loading"
                     class="animate-spin h-5 w-5 text-white"
@@ -23,14 +23,14 @@
                         d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                     />
                 </svg>
-                <span>{{ loading ? 'Loading...' : name }}</span>
+                <span>{{ loading ? '' : name }}</span>
             </div>
         </button>
     </div>
 </template>
 
 <script lang="ts" setup>
-type ButtonType = 'primary' | 'secondary' | 'tertiary' | 'quaternary';
+type ButtonType = 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'info';
 
 const props = defineProps<{
     name: string;
@@ -44,12 +44,13 @@ defineEmits<{
 }>();
 
 const buttonClasses = computed(() => {
-    const baseClasses = 'px-4 py-2 rounded font-medium transition-colors duration-200';
+    const baseClasses = 'px-4 h-[32px] rounded font-medium transition-colors duration-200';
     const typeClasses: Record<ButtonType, string> = {
         primary: 'bg-red-700 text-white hover:bg-red-600',
         secondary: 'bg-gray-500 text-white hover:bg-gray-600',
         tertiary: 'bg-red-800/70 text-white hover:bg-red-900',
         quaternary: 'bg-purple-500 text-white hover:bg-purple-600',
+        info: 'bg-gray-400 text-white hover:bg-gray-500',
     };
     return `${baseClasses} ${typeClasses[props.type]}`;
 });
