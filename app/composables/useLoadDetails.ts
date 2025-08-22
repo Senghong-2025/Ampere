@@ -28,7 +28,7 @@ const useLoadDetails = () => {
         console.log(selectedDate.value, selectedHome.value);
         isLoading.value = true;
         try {
-           const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
+            const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
                 collection($db, "generatedLoad"),
                 where("homeId", "==", selectedHome.value ?? 0),
@@ -194,21 +194,22 @@ const useLoadDetails = () => {
         [`Exported Date: ` + new Date().toLocaleDateString()]
     ];
     const formatHorizontal = (colIndex: number) => {
-        if([1,2,3].includes(colIndex)) return 'left';
-        if([4,5,6].includes(colIndex)) return 'right';
+        if ([1, 2, 3].includes(colIndex)) return 'left';
+        if ([4, 5, 6].includes(colIndex)) return 'right';
         return 'center';
     };
     async function handleExport() {
         exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles, true, formatHorizontal);
     }
 
+    const router = useRouter();
+    const route = useRoute();
     const handleShare = () => {
-            const encodedDate = btoa(selectedDate.value);
-            const encodedHome = btoa(String(selectedHome.value ?? "0"));
+        const encodedDate = btoa(selectedDate.value);
+        const encodedHome = btoa(String(selectedHome.value ?? "0"));
         window.open(`${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`, "_blank");
     };
 
-    const router = useRouter();
     const handleChange = () => {
         const encodedDate = btoa(selectedDate.value);
         const encodedHome = btoa(String(selectedHome.value ?? "0"));
@@ -218,8 +219,20 @@ const useLoadDetails = () => {
                 h: encodedHome,
             },
         });
-        getGeneratedLoadByMonth();
     };
+    watch(
+        () => route.query,
+        (newQuery) => {
+            if (newQuery.d) {
+                selectedDate.value = atob(newQuery.d as string);
+            }
+            if (newQuery.h) {
+                selectedHome.value = Number(atob(newQuery.h as string));
+            }
+            getGeneratedLoadByMonth();
+        },
+        { immediate: true }
+    );
     return {
         selectedDate,
         selectedHome,

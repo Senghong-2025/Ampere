@@ -88,17 +88,6 @@ const {
 
 onMounted(() => getGeneratedLoadByMonth());
 
-// const route = useRoute();
-// watch(route, (newRoute) => {
-//     if (newRoute.query.date) {
-//         selectedDate.value = newRoute.query.date as string;
-//         console.log('Selected Date from URL:', selectedDate.value);
-//     }
-//     if (newRoute.query.home) {
-//         selectedHome.value = newRoute.query.home as unknown as number;
-//     }
-//     getGeneratedLoadByMonth();
-// }, { immediate: true });
 const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'
     if (!room.isPaid && (room.paidAmount ?? 0) > 0) return '!bg-yellow-500'

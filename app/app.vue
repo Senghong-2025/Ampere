@@ -5,7 +5,7 @@
 </template>
 <script lang="ts" setup>
 useHead({
-  title: "Ampere",
+  title: "Ampere (អំពែ)",
   link: [
     {
       rel: "icon",
@@ -16,7 +16,7 @@ useHead({
   meta: [
     {
       name: "description",
-      content: "A modern web application built with Vue 3 and Nuxt 3",
+      content: "សម្រាប់គ្រប់គ្រងការប្រើប្រាស់អគ្គិសនី",
     },
     {
       property: "og:image",

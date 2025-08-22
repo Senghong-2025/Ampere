@@ -128,9 +128,6 @@ const {
     handleShare,
     handleChange,
 } = useLoadDetails();
-onMounted(() => {
-    handleChange();
-});
 const getStatusClass = (room: GenerateLoadData) => {
     if (room.isPaid) return '!bg-green-600'
     if (!room.isPaid && (room.paidAmount ?? 0) > 0) return '!bg-yellow-500'
