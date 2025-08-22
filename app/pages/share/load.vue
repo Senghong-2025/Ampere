@@ -21,7 +21,7 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
         </div>
-        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]" style="height: calc(100dvh - 230px)">
+        <div class="overflow-x-auto bg-white rounded-lg shadow-md mt-2 min-h-[200px]" style="max-height: calc(100vh - 230px)">
             <table class="!min-w-[1200px]">
                 <thead class="sticky top-0 z-10 bg-white">
                     <tr>

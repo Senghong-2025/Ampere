@@ -4,6 +4,16 @@
   </NuxtLayout>
 </template>
 <script lang="ts" setup>
+const setVh = () => {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+};
+
+if (import.meta.client) {
+  setVh();
+  window.addEventListener('resize', setVh);
+}
+
 useHead({
   title: "Ampere (អំពែ)",
   link: [
