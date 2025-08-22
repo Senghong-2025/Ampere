@@ -1,7 +1,7 @@
 <template>
     <div class="mx-auto">
         <FormHeader title="Create Load" />
-        <form class="bg-gray-200 p-2 rounded-sm" @submit.prevent="handleSubmit">
+        <form class="bg-gray-200 p-2 rounded-sm" :class="{ 'opacity-50 pointer-events-none': isLoading }" @submit.prevent="handleSubmit">
             <div class="input-form">
                 <label for="currentKW">Current (kW)</label>
                 <input id="currentKW" v-model="model.createdOn" type="date" name="currentKW" @change="getLoadListByMonth()">
@@ -9,7 +9,7 @@
             <div class="w-full flex gap-2">
                 <div class="input-form w-full">
                     <label for="home">Home</label>
-                    <select id="home" v-model="selectedHome" required>
+                    <select id="home" v-model="selectedHome" required @change="getLoadListByMonth()">
                         <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                     </select>
                 </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="flex flex-wrap w-full gap-2 px-2">
                 <div v-for="(val, index) in filteredRoomsByHome" :key="index" class="flex items-center gap-1">
-                   <input type="checkbox" :value="val.roomNumber" disabled :checked="loadList.some(item => item.roomNumber === val.roomNumber)"> <span>{{ val.roomNumber }}</span>
+                   <input type="checkbox" :value="val.roomNumber" disabled :checked="loadList.some(item => item.roomNumber === val.roomNumber && item.homeId === val.homeId)"> <span>{{ val.roomNumber }}</span>
                 </div>
             </div>
             <div class="input-form">

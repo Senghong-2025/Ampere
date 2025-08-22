@@ -1,7 +1,7 @@
 <template>
     <div class="w-full mx-auto">
         <FormHeader title="Generate Load" />
-        <form action="#">
+        <form action="#" class="grid sm:grid-cols-2" :class="{ 'opacity-50 pointer-events-none': isShowPreview }">
             <div class="input-form">
                 <label for="date">Date</label>
                 <input id="date" v-model="model.date" type="date" name="date" >
@@ -13,7 +13,7 @@
                 </select>
             </div>
             <div class="input-form">
-                <label for="extra">Extra</label>
+                <label for="extra">Extra Amount</label>
                 <input id="extra" v-model="model.extraAmount" type="number" name="extra">
             </div>
             <div class="input-form">
@@ -24,8 +24,9 @@
                 <label for="usageAmount">Usage Amount</label>
                 <input id="usageAmount" v-model="model.usageAmount" type="text" name="usageAmount">
             </div>
-            <div v-if="model.usageAmount > 0 && model.totalUsage > 0" class="text-red-500 mx-2 mb-2 bg-gray-100 p-4 rounded-sm">
-                {{ (model.usageAmount / model.totalUsage).toLocaleString() }} ៛/kwh
+            <div v-if="model.usageAmount > 0 && model.totalUsage > 0" class="input-form" >
+                <label for="#">Amount for 1KW/h</label>
+                <span class="text-red-500 h-[42px] bg-gray-100 rounded-sm flex items-center px-4"> {{ accountingWithoutRoundUp(model.usageAmount / model.totalUsage, 2) }} ៛/kwh</span>
             </div>
         </form>
         <div class="flex gap-2 mb-2">
@@ -67,6 +68,6 @@
     </div>
 </template>
 <script lang="ts" setup>
-
+import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
 const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, selectedHome, onReset } = useGenerateLoad();
 </script>

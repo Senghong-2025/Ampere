@@ -9,7 +9,7 @@ const useLoad = () => {
     const floors = Array.from(new Set(rooms.map(room => room.floor)));
     const selectedHome = ref(homes[0]);
     const selectedFloor = ref(floors[0]);
-    const filteredRooms = computed(() => rooms.filter(room => room.floor === selectedFloor.value));
+    const filteredRooms = computed(() => rooms.filter(room => room.floor === selectedFloor.value && room.homeId === Number(selectedHome.value)));
     const filteredRoomsByHome = computed(() => {
         return rooms.filter(room => room.homeId === Number(selectedHome.value));
     });
@@ -33,11 +33,13 @@ const useLoad = () => {
         };
         const q = query(
             collection($db, "load"),
-            where("roomNumber", "==", model.roomNumber)
+            where("roomNumber", "==", model.roomNumber),
+            where("homeId", "==", Number(selectedHome.value))
         );
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => doc.data());
         const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date(model.createdOn))));
+        console.log("Existing Value:", existingValue.value);
         if (existingValue.value) {
             isLoading.value = false;
             notifyHelper.error("This already existing data");

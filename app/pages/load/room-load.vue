@@ -46,8 +46,10 @@
                             <td class="font-semibold !text-blue-500">{{ room.roomNumber }}</td>
                             <td class="font-semibold !text-red-500">{{ room.currentKW }} (KW)</td>
                             <td>
-                                <button class="text-blue-500 hover:underline"
-                                    @click="$router.push({ path: '/load/update', query: { id: room.id } })">Edit</button>
+                                <button
+                                    class="text-blue-500 hover:underline"
+                                    @click="$router.push({ path: '/load/update', query: { id: room.id } })"
+                                >Edit</button>
                             </td>
                         </tr>
                     </template>
