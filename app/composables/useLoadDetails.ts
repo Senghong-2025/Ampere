@@ -61,6 +61,7 @@ const useLoadDetails = () => {
                         preTotal.usageAmount += val.usageAmount;
                         preTotal.extraAmountByRoom += val.extraAmountByRoom;
                         preTotal.totalAmount += val.totalAmount;
+                        preTotal.isPaid = generatedLoad.value?.data.every(item => item.isPaid);
                     });
                     totalLoadByMonth.value = new GenerateLoadData(preTotal);
                     generatedLoad.value.data = [

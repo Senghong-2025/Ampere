@@ -57,7 +57,15 @@ function useNavbar() {
     },
   ];
 
-  return { navbars, loadRoutes };
+  const shareRoutes: INavbar[] = [
+    {
+      name: "Load Details",
+      path: "/share/load",
+      isEnabled: true
+    },
+  ];
+
+  return { navbars, loadRoutes, shareRoutes };
 }
 
 export default useNavbar;

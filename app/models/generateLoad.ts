@@ -72,13 +72,13 @@ export class GenerateLoadData implements IGenerateLoadData {
         return this.formatCurrency(this.extraAmountByRoom)
     }
 
+    get usageAmountForDisplay() {
+        return this.formatCurrency(this.usageAmount)
+    }
+
     get paidAmountForDisplay() {
         if (this.paidAmount === undefined || this.paidAmount === 0) return "--";
         return this.formatCurrency(this.paidAmount ?? 0)
-    }
-
-    get usageAmountForDisplay() {
-        return this.formatCurrency(this.usageAmount)
     }
 
     get currentMonthKWForDisplay() {
@@ -91,6 +91,25 @@ export class GenerateLoadData implements IGenerateLoadData {
         return this.formatKw(this.usageDifference)
     }
 
+    get isPaidForDisplay():IFormatDisplay {
+        if (this.isPaid) {
+            return {
+                text: "រួចរាល់",
+                color: "text-green-500"
+            };
+        } else if (this.paidAmount && this.paidAmount > 0) {
+            return {
+                text: "មិនទាន់គ្រប់",
+                color: "text-yellow-500"
+            };
+        } else {
+            return {
+                text: "មិនទាន់",
+                color: "text-red-500"
+            };
+        }
+    }
+
     private formatCurrency(value: number): string {
         return `${accountingWithoutRoundUp(value)} ៛`
     }
@@ -98,4 +117,9 @@ export class GenerateLoadData implements IGenerateLoadData {
     private formatKw(value: number): string {
         return `${value.toLocaleString()} KW`
     }
+}
+
+export interface IFormatDisplay {
+    text: string;
+    color: string;
 }
