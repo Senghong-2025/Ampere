@@ -27,11 +27,18 @@
             :is-show-action="true"
             @edit-load="editLoad"
         />
-        <el-dialog v-model="dialogVisible" title="Update Load Details" width="350">
-            <div class="text-gray-500 bg-blue-200 p-2 rounded-md mb-2">
-                Update the load details for the selected home and date room number: <span
-                    class="text-blue-600 font-bold">{{
-                        updateModel.roomNumber }}</span>
+        <el-dialog
+            v-model="dialogVisible"
+            title="Update Load Details"
+            width="350" 
+            :show-close="false"
+            :close-on-click-modal="false">
+            <template #header>
+                <div class="text-[16px] font-semibold text-center">Update Load Details</div>
+            </template>
+            <div class="text-gray-500 bg-gray-100 p-2 rounded-md mb-2">
+                <span>Update load for:</span>
+                <span class="text-blue-600 font-bold">{{ updateModel.roomNumber }}</span>
             </div>
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
@@ -51,11 +58,9 @@
                 </div>
             </div>
             <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="dialogVisible = false">Cancel</el-button>
-                    <el-button type="primary" :loading="isUpdating" @click="onUpdate">
-                        Update
-                    </el-button>
+                <div class="dialog-footer flex gap-1 justify-end">
+                    <TheButton1 type="info" name="Cancel" @click="dialogVisible = false" />
+                    <TheButton1 type="primary" name="Update" :loading="isUpdating" @click="onUpdate" />
                 </div>
             </template>
         </el-dialog>
