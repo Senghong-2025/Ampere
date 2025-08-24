@@ -22,11 +22,6 @@ function useNavbar() {
       path: "/setting",
       isEnabled: true
     },
-    // {
-    //   name: "Voltage Drop",
-    //   path: "/voltage-drop",
-    //   isEnabled: false
-    // },
   ];
 
   const loadRoutes: INavbar[] = [

@@ -1,27 +1,15 @@
+<!-- app.vue -->
 <template>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
-<script lang="ts" setup>
-const setVh = () => {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-};
 
-if (import.meta.client) {
-  setVh();
-  window.addEventListener('resize', setVh);
-}
-
+<script setup lang="ts">
 useHead({
   title: "Ampere (អំពែ)",
   link: [
-    {
-      rel: "icon",
-      type: "image/jpg",
-      href: "logo.png",
-    },
+    { rel: "icon", type: "image/png", href: "/logo.png" },
   ],
   meta: [
     {
@@ -30,7 +18,7 @@ useHead({
     },
     {
       property: "og:image",
-      content: "logo.png",
+      content: "/logo.png",
     },
   ],
 });

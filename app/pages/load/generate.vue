@@ -34,40 +34,13 @@
             <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading" @click="onSave"/>
             <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
-        <div v-if="isShowPreview" class="overflow-x-auto relative w-full bg-white rounded-lg shadow-md">
-            <table class="w-full table-fixed">
-                <thead>
-                    <tr>
-                        <th width="60" class="sticky left-0 z-20 bg-gray-200 shadow-sm">Room</th>
-                        <th width="130">Previous (KW)</th>
-                        <th width="100">New (KW)</th>
-                        <th width="140">Usage Difference</th>
-                        <th width="100">Has Usage</th>
-                        <th width="120">Usage Amount</th>
-                        <th width="120">Extra Amount</th>
-                        <th width="120">Total Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(room, index) in generateLoad?.data" :key="index">
-                        <td align="center" class="sticky left-0 z-10 shadow-sm text-center bg-gray-100">{{ room.roomNumber }}</td>
-                        <td align="center">{{ room.previousMonthKWForDisplay }}</td>
-                        <td align="center">{{ room.currentMonthKWForDisplay }}</td>
-                        <td align="center" class="!text-red-500 font-semibold">{{ room.usageDifferenceForDisplay }}</td>
-                        <td align="center">
-                            <span v-if="room.hasUsageThisMonth" class="text-blue-500">Yes</span>
-                            <span v-else>No</span>
-                        </td>
-                        <td align="center">{{ room.usageAmountForDisplay }}</td>
-                        <td align="center">{{ room.extraAmountByRoomForDisplay }}</td>
-                        <td align="center">{{ room.totalAmountForDisplay }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <LoadDetailTable :is-loading="isLoading" :generated-load="generateLoad ?? {} as GenerateLoad" :is-show-action="false" />
     </div>
 </template>
 <script lang="ts" setup>
 import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
+import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
+
+import type { GenerateLoad } from '~/models/generateLoad';
 const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset } = useGenerateLoad();
 </script>
