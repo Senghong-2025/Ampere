@@ -5,6 +5,9 @@ export interface IGenerateLoad {
     date: string;                    // Report date (ISO string)
     homeId: number;                   // Home identifier
     totalUsage: number;               // Total kW used this month (sum of differences)
+    savingAmount: number;
+    totalUsageAmount: number;     
+    extraAmountEachRoom: number;     
     data: IGenerateLoadData[];        // Per-room breakdown
 }
 export class GenerateLoad implements IGenerateLoad {
@@ -12,6 +15,9 @@ export class GenerateLoad implements IGenerateLoad {
     date: string;
     homeId: number;
     totalUsage: number;
+    savingAmount: number;
+    totalUsageAmount: number;
+    extraAmountEachRoom: number;
     data: GenerateLoadData[];
 
     constructor(data: IGenerateLoad) {
@@ -19,6 +25,9 @@ export class GenerateLoad implements IGenerateLoad {
         this.date = data.date;
         this.homeId = data.homeId;
         this.totalUsage = data.totalUsage;
+        this.savingAmount = data.savingAmount;
+        this.totalUsageAmount = data.totalUsageAmount;
+        this.extraAmountEachRoom = data.extraAmountEachRoom;
         this.data = data.data.length ? data.data.map(item => new GenerateLoadData(item)) : [];
     }
 }

@@ -5,23 +5,17 @@ import type { ILoadResponse } from '~/models/load';
 import useLoad from './useLoad';
 import { formatInputDate, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 
-export interface IGenerateRequest {
-    date: string;
-    homeId: number;
-    usageAmount: number;
-    totalUsage: number;
-    extraAmount: number;
-}
 const useGenerateLoad = () => {
     const { $db } = useNuxtApp();
     const { getLoadListByMonth, homes } = useLoad();
     const isLoading = ref(false);
-    const model = reactive<IGenerateRequest>({
+    const model = reactive<Omit<IGenerateLoad, "id" | "data">>({
         date: formatInputDate(new Date()),
         homeId: homes[0] ?? 0,
-        usageAmount: 0,
         totalUsage: 0,
-        extraAmount: 0,
+        savingAmount: 0,
+        totalUsageAmount: 0,
+        extraAmountEachRoom: 0,
     });
 
     const selectedDate = computed(() => model.date);
@@ -48,8 +42,8 @@ const useGenerateLoad = () => {
     const generateLoad = ref<GenerateLoad>();
     const generateLoadDataForCreate = ref<IGenerateLoad>();
     const generateNewLoad = async () => {
-        if (!model.homeId || model.usageAmount < 1 || model.totalUsage < 1) {
-            notifyHelper.error("Please fill in all fields correctly.");
+        if (!model.homeId || model.totalUsageAmount < 1 || model.totalUsage < 1) {
+            notifyHelper.error("Please fill in all required fields.");
             return;
         }
         isLoading.value = true;
@@ -64,7 +58,7 @@ const useGenerateLoad = () => {
                     (lastItem) => lastItem.roomNumber === item.roomNumber
                 );
                 const calUsageKw = item.currentKW - (lastMonthItem?.currentKW ?? 0);
-                const calUsageAmount = (model.usageAmount / model.totalUsage) * (calUsageKw ?? 0);
+                const calUsageAmount = ((model.totalUsageAmount + model.savingAmount) / model.totalUsage) * (calUsageKw ?? 0);
 
                 const result = {
                     roomNumber: item.roomNumber,
@@ -73,8 +67,8 @@ const useGenerateLoad = () => {
                     hasUsageThisMonth: calUsageKw < item.currentKW,
                     usageDifference: calUsageKw,
                     usageAmount: calUsageAmount,
-                    extraAmountByRoom: convertExtraAmount(model.extraAmount, item),
-                    totalAmount: model.extraAmount + calUsageAmount,
+                    extraAmountByRoom: convertExtraAmount(model.extraAmountEachRoom, item),
+                    totalAmount: model.extraAmountEachRoom + calUsageAmount,
                     paidAmount: 0,
                     remark: "",
                     isPaid: false
@@ -85,14 +79,20 @@ const useGenerateLoad = () => {
 
             generateLoad.value = {
                 date: selectedDate.value,
-                homeId: Number(model.homeId),
-                totalUsage: Number(model.totalUsage),
+                homeId: model.homeId,
+                totalUsage: model.totalUsage,
+                savingAmount: model.savingAmount,
+                extraAmountEachRoom: model.extraAmountEachRoom,
+                totalUsageAmount: model.totalUsageAmount,
                 data: loadData,
             };
             generateLoadDataForCreate.value = {
                 date: selectedDate.value,
-                homeId: Number(model.homeId),
-                totalUsage: Number(model.totalUsage),
+                homeId: model.homeId,
+                totalUsage: model.totalUsage,
+                savingAmount: model.savingAmount,
+                extraAmountEachRoom: model.extraAmountEachRoom,
+                totalUsageAmount: model.totalUsageAmount,
                 data: createLoadData.sort((a, b) => a.roomNumber - b.roomNumber),
             };
         } catch (error) {
@@ -109,17 +109,15 @@ const useGenerateLoad = () => {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
                 collection($db, "generatedLoad"),
-                where("homeId", "==", model.homeId)
+                where("homeId", "==", model.homeId),
+                where("date", ">=", startDate),
+                where("date", "<=", endDate)
             );
 
             const snapshot = await getDocs(q);
-            const existingData = snapshot.docs.filter(doc => {
-                const data = doc.data();
-                return data.date >= startDate && data.date <= endDate;
-            });
-
+            const existingData = snapshot.docs.map(doc => doc.data());
             if (existingData.length > 0) {
-                notifyHelper.info("Data already exists for the selected month.");
+                notifyHelper.info("Load for this month and home already exists.");
                 return;
             }
             await addDoc(collection($db, "generatedLoad"), generateLoadDataForCreate.value);
@@ -133,13 +131,16 @@ const useGenerateLoad = () => {
 
     const onReset = () => {
        model.homeId = homes[0] ?? 0;
-       model.usageAmount = 0;
        model.totalUsage = 0;
+       model.totalUsageAmount = 0;
        generateLoad.value = new GenerateLoad({
-           date: model.date,
-           homeId: model.homeId,
-           totalUsage: model.totalUsage,
-           data: [],
+            date: model.date,
+            homeId: model.homeId,
+            totalUsage: model.totalUsage,
+            totalUsageAmount: model.totalUsageAmount,
+            extraAmountEachRoom: model.extraAmountEachRoom,
+            savingAmount: model.savingAmount,
+            data: [],
        });
     };
     return {

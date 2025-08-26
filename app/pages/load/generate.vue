@@ -14,19 +14,23 @@
             </div>
             <div class="input-form">
                 <label for="extra">Extra Amount/ Room</label>
-                <input id="extra" v-model="model.extraAmount" type="number" name="extra">
+                <input id="extra" v-model="model.extraAmountEachRoom" type="number" name="extra">
             </div>
             <div class="input-form">
-                <label for="load">Total usage (KW)</label>
-                <input id="load" v-model="model.totalUsage" type="number" name="load">
+                <label for="savingAmount">Saving Amount</label>
+                <input id="savingAmount" v-model="model.savingAmount" type="number" name="savingAmount">
             </div>
             <div class="input-form">
-                <label for="usageAmount">Total Load Amount</label>
-                <input id="usageAmount" v-model="model.usageAmount" type="text" name="usageAmount">
+                <label for="totalUsage" star="yes">Total usage (KW)</label>
+                <input id="totalUsage" v-model="model.totalUsage" type="number" name="totalUsage">
             </div>
-            <div v-if="model.usageAmount > 0 && model.totalUsage > 0" class="input-form" >
+            <div class="input-form">
+                <label for="totalUsageAmount" star="yes">Total Usage Amount</label>
+                <input id="totalUsageAmount" v-model="model.totalUsageAmount" type="number" name="totalUsageAmount">
+            </div>
+            <div v-if="model.totalUsageAmount > 0 && model.totalUsage > 0" class="input-form" >
                 <label for="#">Amount for 1KW/h</label>
-                <span class="text-red-500 h-[42px] bg-gray-100 rounded-sm flex items-center px-4"> {{ accountingWithoutRoundUp(model.usageAmount / model.totalUsage, 2) }} ៛/kwh</span>
+                <span class="text-red-500 h-[42px] bg-gray-100 rounded-sm flex items-center px-4"> {{ accountingWithoutRoundUp(model.totalUsageAmount / model.totalUsage, 2) }} ៛/kwh</span>
             </div>
         </form>
         <div class="flex gap-2 mb-2">
