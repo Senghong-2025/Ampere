@@ -24,7 +24,7 @@
         </div>
         <LoadDetailTable
             :is-loading="isLoading" 
-            :generated-load="generatedLoad ?? {} as GenerateLoad"
+            :generated-load="generatedLoad!"
             :is-show-action="true"
             @edit-load="editLoad"
         />
@@ -37,26 +37,30 @@
             <template #header>
                 <div class="text-[16px] font-semibold text-center">Update Load Details</div>
             </template>
-            <div class="text-gray-500 bg-gray-100 p-2 rounded-md mb-2">
-                <span>Update load for:</span>
-                <span class="text-blue-600 font-bold">{{ updateModel.roomNumber }}</span>
+            <div class="text-red-600 bg-black/10 p-2 rounded-md mb-2 italic font-medium">
+                <span>- Update load for: Room </span>
+                <span class="text-blue-600 font-bold">{{ updateModel.roomNumber }}</span> <br>
+                <span>- Total Amount For Pay: </span>
+                <span class="text-blue-600 font-bold">{{ accountingWithoutRoundUp(totalAmountForPaid, 2) }}៛</span>
             </div>
-            <div class="w-full space-y-2">
+            <div class="w-full flex flex-col gap-2">
                 <div class="flex w-full items-center">
                     <label for="isPaid" class="w-[150px]">Is Paid</label>
-                    <input
-                        id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1"
+                    <div class="flex justify-start">
+                        <input
+                        id="isPaid" v-model="updateModel.isPaid" type="checkbox"
                         @change="onSwitchChange">
+                    </div>
                 </div>
 
                 <div class="flex w-full items-center">
                     <label for="paidAmount" class="w-[150px]">Paid Amount</label>
-                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="flex-1">
+                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-auto">
                 </div>
 
                 <div class="flex w-full items-center">
                     <label for="remark" class="w-[150px]">Remark</label>
-                    <input id="remark" v-model="updateModel.remark" type="text" class="flex-1">
+                    <input id="remark" v-model="updateModel.remark" type="text" class="w-auto">
                 </div>
             </div>
             <template #footer>
@@ -87,6 +91,7 @@ import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
 import type { GenerateLoad } from '@/models/generateLoad';
 import useLoadDetails from '@/composables/loads/useLoadDetails';
 import CopyLink from '@/components/load/CopyLink.vue';
+import { accountingWithoutRoundUp } from '~/helpers/textFormatHelper';
 
 const {
     selectedDate,
@@ -109,5 +114,6 @@ const {
     onClickDelete,
     onConfirmDelete,
     isShowConfirm,
+    totalAmountForPaid,
 } = useLoadDetails();
 </script>

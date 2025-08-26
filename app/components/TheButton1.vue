@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button :class="buttonClasses" class="cursor-pointer" @click="$emit('click')">
+        <button :class="buttonClasses" :disabled="disabled" class="cursor-pointer" @click="$emit('click')">
             <div class="flex items-center">
                 <svg
                     v-if="loading"

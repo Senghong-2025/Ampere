@@ -2,14 +2,14 @@
     <div class="mx-auto">
         <FormHeader title="Room Load" />
         <div class="flex gap-2 w-full">
-            <div class="flex items-center gap-2 my-2 w-full">
-                <label for="currentKW" class="w-32">Filter Home</label>
+            <div class="flex items-center gap-2 my-2 w-2/3">
+                <label for="currentKW">Home</label>
                 <select id="home" v-model="selectedHome" name="home" class="w-full" @change="getLoadListByMonth()">
                     <option v-for="home in homes" :key="home" :value="home">{{ 'Home ' + home }}</option>
                 </select>
             </div>
             <div class="flex items-center gap-2 my-2 w-full">
-                <label for="currentKW" class="w-32">Filter Month</label>
+                <label for="currentKW">Month</label>
                 <input
                     id="currentKW"
                     v-model="model.createdOn"
@@ -18,11 +18,11 @@
             </div>
         </div>
         <div class="overflow-x-auto bg-white rounded-lg shadow-md relative">
-            <table style="min-width: 350px !important;">
+            <table style="min-width: 500px !important;">
                 <thead>
                     <tr>
                         <th>Room Number</th>
-                        <th>Total KW for <span class="text-blue-600">{{ getMonthOnly(new Date(model.createdOn))
+                        <th>Total(KW) for <span class="text-blue-600">{{ getMonthOnly(new Date(model.createdOn))
                                 }}</span></th>
                         <th>Created On</th>
                         <th width="100">Action</th>

@@ -3,11 +3,11 @@
         <FormHeader title="Update Load" />
         <form v-loading="isLoading" class="bg-gray-200 p-2 rounded-sm" @submit.prevent="updateLoad($route.query.id as string)">
             <div class="input-form">
-                <label for="modifyKW">Modify (kW)</label>
+                <label for="modifyKW">Modify (KW)</label>
                 <input id="modifyKW" v-model="model.modifiedOn" type="date" name="modifyKW">
             </div>
             <div class="input-form">
-                <label for="roomNumber">Room Number</label>
+                <label for="roomNumber">Room</label>
                 <select id="roomNumber" v-model="model.roomNumber" name="roomNumber" disabled required>
                     <option v-for="value in rooms" :key="value.id" :value="value.roomNumber">{{ value.name }}
                     </option>
@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 import { rooms } from '~/assets/data/room';
 import TheButton1 from '~/components/TheButton1.vue';
+import useLoad from '~/composables/loads/useLoad';
 
 const {
     model,

@@ -103,10 +103,17 @@ const useLoadDetails = () => {
         Object.assign(updateModel, room);
     };
 
+    const totalAmountForPaid = computed(()=> clonedUpdateData.value?.totalAmount ?? 0);
     const onSwitchChange = () => {
-        const total = clonedUpdateData.value?.totalAmount ?? 0;
-        updateModel.paidAmount = updateModel.isPaid ? total : 0;
+        updateModel.paidAmount = updateModel.isPaid ? totalAmountForPaid.value : 0;
     };
+    watch(() => updateModel.paidAmount, (newVal) => {
+        if (newVal >= totalAmountForPaid.value) {
+            updateModel.isPaid = true;
+        } else {
+            updateModel.isPaid = false;
+        }
+    });
 
     const isUpdating = ref(false);
     const onUpdate = async () => {
@@ -250,7 +257,7 @@ const useLoadDetails = () => {
         deleteLoadId.value = load.id ?? "";
     };
 
-    const onConfirmDelete = async () => {  
+    const onConfirmDelete = async () => {
         isLoading.value = true;
         try {
             const docRef = doc($db, "generatedLoad", deleteLoadId.value);
@@ -265,7 +272,7 @@ const useLoadDetails = () => {
             isLoading.value = false;
         }
     };
-    
+
     return {
         selectedDate,
         selectedHome,
@@ -288,6 +295,7 @@ const useLoadDetails = () => {
         onClickDelete,
         onConfirmDelete,
         isShowConfirm,
+        totalAmountForPaid,
     }
 };
 
