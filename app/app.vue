@@ -1,11 +1,26 @@
-<!-- app.vue -->
 <template>
-  <NuxtLayout>
+  <SplashScreen v-if="isFirstAccess" />
+  <NuxtLayout v-else>
     <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import SplashScreen from '@/components/SplashScreen.vue';
+
+const isFirstAccess = ref(true);
+onMounted(() => {
+  if (sessionStorage.getItem('hasLoaded')) {
+    isFirstAccess.value = false
+  } else {
+    setTimeout(() => {
+      isFirstAccess.value = false
+      sessionStorage.setItem('hasLoaded', '1')
+    }, 2000)
+  }
+
+})
+
 useHead({
   title: "Ampere (អំពែ)",
   link: [
