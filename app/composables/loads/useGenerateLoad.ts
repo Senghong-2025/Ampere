@@ -1,8 +1,9 @@
 import { type IGenerateLoadData, GenerateLoad, GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
-import { formatInputDate, getStartAndEndOfMonth } from './../helpers/dateTimeHelper';
 import notifyHelper from '~/helpers/notifyHelper';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import type { ILoadResponse } from '~/models/load';
+import useLoad from './useLoad';
+import { formatInputDate, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 
 export interface IGenerateRequest {
     date: string;

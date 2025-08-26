@@ -11,9 +11,9 @@
         </FormHeader>
         <div class="filter-form flex gap-2">
             <div class="flex items-center gap-2 w-full">
-                <label for="home" class="w-[80px]">ជ្រើសរើសកុដិ</label>
+                <label for="home" class="w-[20px]">កុដិ</label>
                 <select id="home" v-model="selectedHome" class="w-full" @change="handleChange()">
-                    <option v-for="home in homes" :key="home" :value="home">{{ 'កុដិលេខ' + home }}</option>
+                    <option v-for="(home, index) in homes" :key="index" :value="home">{{ 'កុដិលេខ' + home }}</option>
                 </select>
             </div>
             <div class="flex items-center gap-2 w-full">
@@ -27,9 +27,10 @@
 </template>
 <script lang="ts" setup>
 import FormHeader from '@/components/FormHeader.vue';
-import CopyLink from '@/composables/load/CopyLink.vue';
-import LoadDetailTable from '~/components/loads/LoadDetailTable.vue';
-import type { GenerateLoad } from '~/models/generateLoad';
+import CopyLink from '@/components/load/CopyLink.vue';
+import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
+import type { GenerateLoad } from '@/models/generateLoad';
+import useLoadDetails from '@/composables/loads/useLoadDetails';
 
 definePageMeta({
     layout: 'share'

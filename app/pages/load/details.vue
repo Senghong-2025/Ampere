@@ -9,17 +9,18 @@
                 </div>
             </template>
         </FormHeader>
-        <div class="filter-form flex gap-2">
-            <div class="flex items-center gap-2 w-full">
+        <div class="filter-form flex gap-2 items-end">
+            <div class="flex h-full items-center gap-2 w-full">
                 <label for="home">Home</label>
                 <select id="home" v-model="selectedHome" class="w-full" @change="handleChange()">
-                    <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
+                    <option v-for="(home, index) in homes" :key="index" :value="home">{{ home }}</option>
                 </select>
             </div>
             <div class="flex items-center gap-2 w-full">
                 <label for="date">Date</label>
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
+            <TheButton1 type="primary" name="Delete" @click="onClickDelete(generatedLoad ?? {} as GenerateLoad)" />
         </div>
         <LoadDetailTable
             :is-loading="isLoading" 
@@ -43,7 +44,8 @@
             <div class="w-full space-y-2">
                 <div class="flex w-full items-center">
                     <label for="isPaid" class="w-[150px]">Is Paid</label>
-                    <input id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1"
+                    <input
+                        id="isPaid" v-model="updateModel.isPaid" type="checkbox" class="flex-1"
                         @change="onSwitchChange">
                 </div>
 
@@ -65,13 +67,26 @@
             </template>
         </el-dialog>
         <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @open="handleOpenLink" />
+        <!-- Delete dialog -->
+        <el-dialog
+            v-model="isShowConfirm" title="Delete Load Details" width="350" :show-close="false"
+        >
+            <template #header>
+                <div class="text-[12px] font-semibold"> Do you want to delete this load? </div>
+            </template>
+            <div class="flex justify-end gap-1 mt-2">
+                <TheButton1 type="info" name="Cancel" @click="isShowConfirm = false" />
+                <TheButton1 type="primary" name="Yes" :loading="isLoading" @click="onConfirmDelete" />
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script lang="ts" setup>
 import FormHeader from '@/components/FormHeader.vue';
-import CopyLink from '@/composables/load/CopyLink.vue';
 import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
-import type { GenerateLoad } from '~/models/generateLoad';
+import type { GenerateLoad } from '@/models/generateLoad';
+import useLoadDetails from '@/composables/loads/useLoadDetails';
+import CopyLink from '@/components/load/CopyLink.vue';
 
 const {
     selectedDate,
@@ -91,5 +106,8 @@ const {
     shareUrl,
     handleOpenLink,
     editLoad,
+    onClickDelete,
+    onConfirmDelete,
+    isShowConfirm,
 } = useLoadDetails();
 </script>

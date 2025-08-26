@@ -13,7 +13,7 @@
                 </select>
             </div>
             <div class="input-form">
-                <label for="extra">Extra Amount</label>
+                <label for="extra">Extra Amount/ Room</label>
                 <input id="extra" v-model="model.extraAmount" type="number" name="extra">
             </div>
             <div class="input-form">
@@ -21,7 +21,7 @@
                 <input id="load" v-model="model.totalUsage" type="number" name="load">
             </div>
             <div class="input-form">
-                <label for="usageAmount">Usage Amount</label>
+                <label for="usageAmount">Total Load Amount</label>
                 <input id="usageAmount" v-model="model.usageAmount" type="text" name="usageAmount">
             </div>
             <div v-if="model.usageAmount > 0 && model.totalUsage > 0" class="input-form" >
@@ -34,13 +34,14 @@
             <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading" @click="onSave"/>
             <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
-        <LoadDetailTable :is-loading="isLoading" :generated-load="generateLoad ?? {} as GenerateLoad" :is-show-action="false" />
+        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading" :generated-load="generateLoad ?? {} as GenerateLoad" :is-show-action="false" />
     </div>
 </template>
 <script lang="ts" setup>
 import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
 import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
 
+import useGenerateLoad from '~/composables/loads/useGenerateLoad';
 import type { GenerateLoad } from '~/models/generateLoad';
 const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset } = useGenerateLoad();
 </script>

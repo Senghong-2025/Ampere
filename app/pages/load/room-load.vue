@@ -50,6 +50,7 @@
 </template>
 <script lang="ts" setup>
 import FormHeader from '~/components/FormHeader.vue';
+import useLoad from '~/composables/loads/useLoad';
 import { getMonthOnly } from '~/helpers/dateTimeHelper';
 
 const { getLoadListByMonth, loadList, isLoading, model, selectedHome, homes } = useLoad();

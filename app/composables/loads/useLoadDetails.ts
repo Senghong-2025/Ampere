@@ -1,5 +1,5 @@
-import { collection, doc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
-import { rooms } from './../assets/data/room';
+import { collection, deleteDoc, doc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
+import { rooms } from '@/assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
 import { createColumn, exportHelper } from '~/helpers/explortHelper';
@@ -242,6 +242,30 @@ const useLoadDetails = () => {
         window.open(shareUrl.value, "_blank");
         shareVisible.value = false;
     };
+
+    const isShowConfirm = ref(false);
+    const deleteLoadId = ref('');
+    const onClickDelete = (load: GenerateLoad) => {
+        isShowConfirm.value = true;
+        deleteLoadId.value = load.id ?? "";
+    };
+
+    const onConfirmDelete = async () => {  
+        isLoading.value = true;
+        try {
+            const docRef = doc($db, "generatedLoad", deleteLoadId.value);
+            console.log(docRef);
+            await deleteDoc(docRef);
+            notifyHelper.success("Deleted successfully.");
+            isShowConfirm.value = false;
+            await getGeneratedLoadByMonth();
+        } catch (error) {
+            console.error("Error deleting load:", error);
+        } finally {
+            isLoading.value = false;
+        }
+    };
+    
     return {
         selectedDate,
         selectedHome,
@@ -261,6 +285,9 @@ const useLoadDetails = () => {
         shareVisible,
         shareUrl,
         handleOpenLink,
+        onClickDelete,
+        onConfirmDelete,
+        isShowConfirm,
     }
 };
 

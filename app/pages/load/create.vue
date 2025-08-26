@@ -44,7 +44,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-import TheButton1 from '~/components/TheButton1.vue';
+import TheButton1 from '@/components/TheButton1.vue';
+import useLoad from '@/composables/loads/useLoad';
 
 const {
     model,

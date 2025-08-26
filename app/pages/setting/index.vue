@@ -1,6 +1,8 @@
 <template>
     <div class="p-4">
-        <TheButton1 type="primary" name="Logout" @click="handleLogout"/>
+        <div class="fixed bottom-2 right-2">
+            <TheButton1 type="primary" name="Logout" @click="handleLogout"/>
+        </div>
     </div>
 </template>
 <script lang="ts" setup>

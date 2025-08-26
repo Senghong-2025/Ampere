@@ -10,7 +10,7 @@
                 </NuxtLink>
             </div>
         </div>
-        <div class="p-2">
+        <div class="px-2">
             <NuxtPage />
         </div>
     </div>
