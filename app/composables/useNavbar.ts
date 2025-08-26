@@ -26,11 +26,6 @@ function useNavbar() {
 
   const loadRoutes: INavbar[] = [
     {
-      name: "Load",
-      path: "/load",
-      isEnabled: true
-    },
-    {
       name: "Load Details",
       path: "/load/details",
       isEnabled: true

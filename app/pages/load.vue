@@ -19,6 +19,10 @@
 // import { loads } from "@s/assets/data/load";
 
 const { loadRoutes } = useNavbar();
+
+onMounted(() => {
+    navigateTo("/load/details");
+})
 // async function generatePDF() {
 //     const { jsPDF } = await import("jspdf");
 //     const { autoTable } = await import("jspdf-autotable");
