@@ -13,6 +13,7 @@ interface IUpdateModel {
 }
 const useLoadDetails = () => {
     const { $db } = useNuxtApp();
+    const { sendMessageToGroup } = useTelegramBot();
     const today = new Date()
     const selectedDate = ref(
         `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
@@ -25,7 +26,6 @@ const useLoadDetails = () => {
     const generateLoadForUpdate = ref<IGenerateLoad>();
     const totalLoadByMonth = ref<GenerateLoadData>();
     const getGeneratedLoadByMonth = async () => {
-        console.log(selectedDate.value, selectedHome.value);
         isLoading.value = true;
         try {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
@@ -76,6 +76,9 @@ const useLoadDetails = () => {
                     date: selectedDate.value,
                     homeId: selectedHome.value ?? 0,
                     totalUsage: 0,
+                    savingAmount: 0,
+                    totalUsageAmount: 0,
+                    extraAmountEachRoom: 0,
                     data: []
                 });
                 notifyHelper.info('No generated load found for the specified month and year.');
@@ -107,14 +110,6 @@ const useLoadDetails = () => {
     const onSwitchChange = () => {
         updateModel.paidAmount = updateModel.isPaid ? totalAmountForPaid.value : 0;
     };
-    watch(() => updateModel.paidAmount, (newVal) => {
-        if (newVal >= totalAmountForPaid.value) {
-            updateModel.isPaid = true;
-        } else {
-            updateModel.isPaid = false;
-        }
-    });
-
     const isUpdating = ref(false);
     const onUpdate = async () => {
         isUpdating.value = true;
@@ -133,8 +128,11 @@ const useLoadDetails = () => {
                 }
             });
             const docRef = doc($db, "generatedLoad", updatedId.value);
-            await updateDoc(docRef, { ...generateLoadForUpdate.value });
-            await getGeneratedLoadByMonth();
+            await Promise.all([
+                updateDoc(docRef, { ...generateLoadForUpdate.value }),
+                sendMessageToGroup(`📢 <strong>ថ្លៃភ្លើងកុដិលេខ ${selectedHome.value} នៅបន្ទប់លេខ ${clonedUpdateData.value?.roomNumber}</strong>\n\nប្រើប្រាស់អស់: ${clonedUpdateData.value?.usageDifferenceForDisplay}\nសរុបថ្លៃប្រើប្រាស់: ${clonedUpdateData.value?.totalAmountForDisplay}\nបង់លុយចំនួន: ${updateModel.paidAmount}\nរួចរាល់?: ${updateModel.isPaid ? "បង់រួចរាល់ ✅" : "មិនទាន់គ្រប់ ⚠️"}\nកំណត់សម្គាល់: ${updateModel.remark || "គ្មាន"}`),
+                getGeneratedLoadByMonth()
+            ]);
             notifyHelper.success("updated successfully.");
         } catch (error) {
             console.error("Error updating load:", error);
@@ -214,16 +212,14 @@ const useLoadDetails = () => {
     const route = useRoute();
     const shareVisible = ref(false);
     const shareUrl = ref('');
+    const encodedDate = btoa(selectedDate.value);
+    const encodedHome = btoa(String(selectedHome.value ?? "0"));
     const handleShare = () => {
-        const encodedDate = btoa(selectedDate.value);
-        const encodedHome = btoa(String(selectedHome.value ?? "0"));
         shareVisible.value = true;
         shareUrl.value = `${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`;
     };
 
     const handleChange = () => {
-        const encodedDate = btoa(selectedDate.value);
-        const encodedHome = btoa(String(selectedHome.value ?? "0"));
         router.replace({
             query: {
                 d: encodedDate,
@@ -273,6 +269,10 @@ const useLoadDetails = () => {
         }
     };
 
+    const onPaidAmountInput = () => {
+        updateModel.isPaid = updateModel.paidAmount >= (clonedUpdateData.value?.totalAmount ?? 0);
+    };
+
     return {
         selectedDate,
         selectedHome,
@@ -296,6 +296,7 @@ const useLoadDetails = () => {
         onConfirmDelete,
         isShowConfirm,
         totalAmountForPaid,
+        onPaidAmountInput,
     }
 };
 

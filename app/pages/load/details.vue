@@ -55,7 +55,7 @@
 
                 <div class="flex w-full items-center">
                     <label for="paidAmount" class="w-[150px]">Paid Amount</label>
-                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-auto">
+                    <input @input="onPaidAmountInput" id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-auto">
                 </div>
 
                 <div class="flex w-full items-center">
@@ -116,5 +116,6 @@ const {
     isShowConfirm,
     totalAmountForPaid,
     getGeneratedLoadByMonth,
+    onPaidAmountInput,
 } = useLoadDetails();
 </script>
