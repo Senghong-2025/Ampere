@@ -128,8 +128,8 @@ const useLoadDetails = () => {
                 }
             });
             const docRef = doc($db, "generatedLoad", updatedId.value);
+            await updateDoc(docRef, { ...generateLoadForUpdate.value });
             await Promise.all([
-                updateDoc(docRef, { ...generateLoadForUpdate.value }),
                 sendMessageToGroup(`📢 <strong>ថ្លៃភ្លើងកុដិលេខ ${selectedHome.value} នៅបន្ទប់លេខ ${clonedUpdateData.value?.roomNumber}</strong>\n\nប្រើប្រាស់អស់: ${clonedUpdateData.value?.usageDifferenceForDisplay}\nសរុបថ្លៃប្រើប្រាស់: ${clonedUpdateData.value?.totalAmountForDisplay}\nបង់លុយចំនួន: ${updateModel.paidAmount}\nរួចរាល់?: ${updateModel.isPaid ? "បង់រួចរាល់ ✅" : "មិនទាន់គ្រប់ ⚠️"}\nកំណត់សម្គាល់: ${updateModel.remark || "គ្មាន"}`),
                 getGeneratedLoadByMonth()
             ]);
