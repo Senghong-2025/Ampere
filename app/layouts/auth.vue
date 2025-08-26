@@ -1,6 +1,6 @@
 <template>
-    <div class="w-full min-h-screen">
-        <slot />
-        <TheFooter />
-    </div>
+  <div class="min-h-screen w-full">
+      <slot />
+      <TheFooter />
+  </div>
 </template>

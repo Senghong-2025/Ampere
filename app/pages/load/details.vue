@@ -3,7 +3,7 @@
         <FormHeader title="Load Details" is-show-button>
             <template #button>
                 <div class="flex gap-1">
-                    <TheButton1 type="primary" :loading="isLoading" name="Reload" @click="handleChange()" />
+                    <TheButton1 type="primary" :loading="isLoading" name="Reload" @click="getGeneratedLoadByMonth()" />
                     <TheButton1 type="primary" name="Export" :disabled="isLoading" @click="handleExport()" />
                     <TheButton1 type="primary" name="Share" :disabled="isLoading" @click="handleShare()" />
                 </div>
@@ -115,5 +115,6 @@ const {
     onConfirmDelete,
     isShowConfirm,
     totalAmountForPaid,
+    getGeneratedLoadByMonth,
 } = useLoadDetails();
 </script>

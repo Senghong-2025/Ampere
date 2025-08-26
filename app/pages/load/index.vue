@@ -1,6 +1,8 @@
 <template>
   <div class="">
-    <span>Hello</span>
+    <div class="bg-red-200 p-2 rounded-sm">
+      <span>Hello</span>
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full min-h-screen flex flex-col justify-center items-center bg-gradient-to-b from-gray-400 to-blue-800">
+    <div class="w-full flex flex-col min-h-screen justify-center items-center bg-gradient-to-b from-gray-400 to-blue-800">
         <div class="bg-gray-300 w-[350px] rounded-sm p-4">
             <div class="text-xl font-bold text-center mb-2">Access as Admin Account</div>
             <div class="input-form">
