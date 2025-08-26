@@ -212,14 +212,16 @@ const useLoadDetails = () => {
     const route = useRoute();
     const shareVisible = ref(false);
     const shareUrl = ref('');
-    const encodedDate = btoa(selectedDate.value);
-    const encodedHome = btoa(String(selectedHome.value ?? "0"));
     const handleShare = () => {
+        const encodedDate = btoa(selectedDate.value);
+        const encodedHome = btoa(String(selectedHome.value ?? "0"));
         shareVisible.value = true;
         shareUrl.value = `${window.origin}/share/load?d=${encodedDate}&h=${encodedHome}`;
     };
 
     const handleChange = () => {
+        const encodedDate = btoa(selectedDate.value);
+        const encodedHome = btoa(String(selectedHome.value ?? "0"));
         router.replace({
             query: {
                 d: encodedDate,
