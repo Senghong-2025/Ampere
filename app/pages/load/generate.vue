@@ -13,6 +13,9 @@
                 </select>
             </div>
             <div class="input-form">
+                <div>Total: {{ totalKW }}</div>
+            </div>
+            <div class="input-form">
                 <label for="extra">Extra Amount/ Room</label>
                 <input id="extra" v-model="model.extraAmountEachRoom" type="number" name="extra">
             </div>
@@ -38,7 +41,7 @@
             <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading" @click="onSave"/>
             <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
-        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading" :generated-load="generateLoad ?? {} as GenerateLoad" :is-show-action="false" />
+        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading" :generated-load="generateLoad!" :is-show-action="false" />
     </div>
 </template>
 <script lang="ts" setup>
@@ -46,6 +49,9 @@ import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
 import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
 
 import useGenerateLoad from '~/composables/loads/useGenerateLoad';
-import type { GenerateLoad } from '~/models/generateLoad';
-const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset } = useGenerateLoad();
+const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset, getTotalKwOfHomeMonth, totalKW } = useGenerateLoad();
+
+onMounted(() => {
+    getTotalKwOfHomeMonth();
+})
 </script>

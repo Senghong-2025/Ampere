@@ -14,7 +14,7 @@
                     <th width="125">ចំនួនបានបង់</th>
                     <th width="120">សរុប</th>
                     <th width="100">បានបង់ប្រាក់</th>
-                    <th>ចំណា</th>
+                    <th>ចំណាំ</th>
                     <th v-if="isShowAction">Action</th>
                 </tr>
             </thead>

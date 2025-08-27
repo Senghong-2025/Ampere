@@ -3,7 +3,7 @@ import { rooms } from '@/assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
 import { createColumn, exportHelper } from '~/helpers/explortHelper';
-import { getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
+import { getMonthAndYearOnly, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 
 interface IUpdateModel {
     roomNumber: string;
@@ -205,7 +205,7 @@ const useLoadDetails = () => {
         return 'center';
     };
     async function handleExport() {
-        exportHelper(generatedLoad.value?.data ?? [], columns, 'generated_load.xlsx', 'Generated Load', headerTitles, true, formatHorizontal);
+        exportHelper(generatedLoad.value?.data ?? [], columns, `Generated_load_${selectedHome.value}_${getMonthAndYearOnly(new Date(selectedDate.value))}.xlsx`, 'Generated Load', headerTitles, true, formatHorizontal);
     }
 
     const router = useRouter();

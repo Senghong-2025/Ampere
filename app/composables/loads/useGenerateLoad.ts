@@ -143,6 +143,17 @@ const useGenerateLoad = () => {
             data: [],
        });
     };
+
+    const totalKW = ref(0);
+    const getTotalKwOfHomeMonth = async () => {
+        try {
+           const result = await getLoadListByMonth();
+           totalKW.value = result?.reduce((sum, item) => sum + (item.currentKW ?? 0), 0) ?? 0;
+        } catch (error) {
+            console.error("ERr", error);
+        }
+    };
+
     return {
         model,
         generateNewLoad,
@@ -152,6 +163,8 @@ const useGenerateLoad = () => {
         homes,
         onSave,
         onReset,
+        getTotalKwOfHomeMonth,
+        totalKW,
     };
 };
 
