@@ -1,7 +1,10 @@
 <template>
     <div class="w-full mx-auto">
         <FormHeader title="Generate Load" />
-        <form action="#" class="grid sm:grid-cols-2" :class="{ 'opacity-50 pointer-events-none': isShowPreview }">
+        <div v-if="isLoading(ENUM_LOADING.GET)" class="text-center w-full">
+            <span>Getting Total Usage(KW)...</span>
+        </div>
+        <form v-else action="#" class="grid sm:grid-cols-2" :class="{ 'opacity-50 pointer-events-none': isShowPreview }">
             <div class="input-form">
                 <label for="date">Date</label>
                 <input id="date" v-model="model.date" type="date" name="date" >
@@ -11,9 +14,6 @@
                 <select id="homeId" v-model="model.homeId" name="homeId">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                 </select>
-            </div>
-            <div class="input-form">
-                <div>Total: {{ totalKW }}</div>
             </div>
             <div class="input-form">
                 <label for="extra">Extra Amount/ Room</label>
@@ -37,19 +37,20 @@
             </div>
         </form>
         <div class="flex gap-2 mb-2">
-            <TheButton1 v-if="!isShowPreview" name="Generate To Preview" type="tertiary" :loading="isLoading" @click="generateNewLoad"/>
-            <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading" @click="onSave"/>
+            <TheButton1 v-if="!isShowPreview" name="Generate To Preview" type="tertiary" :loading="isLoading(ENUM_LOADING.GENERATE)" @click="generateNewLoad"/>
+            <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading(ENUM_LOADING.SAVE_FORM)" @click="onSave"/>
             <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
-        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading" :generated-load="generateLoad!" :is-show-action="false" />
+        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading(ENUM_LOADING.GENERATE)" :generated-load="generateLoad!" :is-show-action="false" />
     </div>
 </template>
 <script lang="ts" setup>
 import { accountingWithoutRoundUp  } from '~/helpers/textFormatHelper';
 import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
-
 import useGenerateLoad from '~/composables/loads/useGenerateLoad';
-const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset, getTotalKwOfHomeMonth, totalKW } = useGenerateLoad();
+import { ENUM_LOADING } from '~/enums/loading';
+
+const { model, generateNewLoad, isLoading, generateLoad, isShowPreview, homes, onSave, onReset, getTotalKwOfHomeMonth } = useGenerateLoad();
 
 onMounted(() => {
     getTotalKwOfHomeMonth();

@@ -4,11 +4,12 @@ import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import type { ILoadResponse } from '~/models/load';
 import useLoad from './useLoad';
 import { formatInputDate, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
+import { ENUM_LOADING } from '~/enums/loading';
 
 const useGenerateLoad = () => {
     const { $db } = useNuxtApp();
     const { getLoadListByMonth, homes } = useLoad();
-    const isLoading = ref(false);
+    const {startLoading, stopLoading, isLoading } = useLoading();
     const model = reactive<Omit<IGenerateLoad, "id" | "data">>({
         date: formatInputDate(new Date()),
         homeId: homes[0] ?? 0,
@@ -46,14 +47,14 @@ const useGenerateLoad = () => {
             notifyHelper.error("Please fill in all required fields.");
             return;
         }
-        isLoading.value = true;
+        startLoading(ENUM_LOADING.GENERATE);
         try {
             const [currentData, lastMonthData] = await Promise.all([
                 getLoadListByMonth(thisMonth.value, false, model.homeId),
                 getLoadListByMonth(lastMonth.value, false, model.homeId),
             ]);
-            const createLoadData:IGenerateLoadData[] = [];
-            const loadData: GenerateLoadData[]  = (currentData ?? []).map((item) => {
+            const createLoadData: IGenerateLoadData[] = [];
+            const loadData: GenerateLoadData[] = (currentData ?? []).map((item) => {
                 const lastMonthItem = lastMonthData?.find(
                     (lastItem) => lastItem.roomNumber === item.roomNumber
                 );
@@ -98,13 +99,13 @@ const useGenerateLoad = () => {
         } catch (error) {
             console.error("Error:", error);
         } finally {
-            isLoading.value = false;
+            stopLoading(ENUM_LOADING.GENERATE);
         }
     };
     const isShowPreview = computed(() => !!generateLoad.value?.data.length);
 
     const onSave = async () => {
-        isLoading.value = true;
+        startLoading(ENUM_LOADING.SAVE_FORM);
         try {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
             const q = query(
@@ -125,15 +126,15 @@ const useGenerateLoad = () => {
         } catch (error) {
             console.error("Error saving load:", error);
         } finally {
-            isLoading.value = false;
+            stopLoading(ENUM_LOADING.SAVE_FORM);
         }
     };
 
     const onReset = () => {
-       model.homeId = homes[0] ?? 0;
-       model.totalUsage = 0;
-       model.totalUsageAmount = 0;
-       generateLoad.value = new GenerateLoad({
+        model.homeId = homes[0] ?? 0;
+        model.totalUsage = 0;
+        model.totalUsageAmount = 0;
+        generateLoad.value = new GenerateLoad({
             date: model.date,
             homeId: model.homeId,
             totalUsage: model.totalUsage,
@@ -141,30 +142,36 @@ const useGenerateLoad = () => {
             extraAmountEachRoom: model.extraAmountEachRoom,
             savingAmount: model.savingAmount,
             data: [],
-       });
+        });
     };
 
-    const totalKW = ref(0);
     const getTotalKwOfHomeMonth = async () => {
+        startLoading(ENUM_LOADING.GET);
         try {
-           const result = await getLoadListByMonth();
-           totalKW.value = result?.reduce((sum, item) => sum + (item.currentKW ?? 0), 0) ?? 0;
+            const [currentData, lastMonthData] = await Promise.all([
+                getLoadListByMonth(thisMonth.value, false, model.homeId),
+                getLoadListByMonth(lastMonth.value, false, model.homeId),
+            ]);
+            const last = lastMonthData?.reduce((sum, item) => sum + (item.currentKW ?? 0), 0) ?? 0;
+            const current = currentData?.reduce((sum, item) => sum + (item.currentKW ?? 0), 0) ?? 0;
+            model.totalUsage = current - last;
         } catch (error) {
-            console.error("ERr", error);
+            console.error("Error get total: ", error);
+        } finally {
+            stopLoading(ENUM_LOADING.GET);
         }
     };
 
     return {
         model,
         generateNewLoad,
-        isLoading,
         generateLoad,
         isShowPreview,
         homes,
         onSave,
         onReset,
         getTotalKwOfHomeMonth,
-        totalKW,
+        isLoading,
     };
 };
 
