@@ -1,17 +1,14 @@
 <template>
     <div class="w-full mx-auto">
         <FormHeader title="Generate Load" />
-        <div v-if="isLoading(ENUM_LOADING.GET)" class="text-center w-full">
-            <span>Getting Total Usage(KW)...</span>
-        </div>
-        <form v-else action="#" class="grid sm:grid-cols-2" :class="{ 'opacity-50 pointer-events-none': isShowPreview }">
+        <form action="#" class="grid sm:grid-cols-2" :class="{ 'opacity-50 pointer-events-none': isShowPreview || isLoading(ENUM_LOADING.GET) }">
             <div class="input-form">
                 <label for="date">Date</label>
-                <input id="date" v-model="model.date" type="date" name="date" >
+                <input id="date" v-model="model.date" type="date" name="date" @change="getTotalKwOfHomeMonth()">
             </div>
             <div class="input-form">
                 <label for="homeId">Home</label>
-                <select id="homeId" v-model="model.homeId" name="homeId">
+                <select id="homeId" v-model="model.homeId" name="homeId" @change="getTotalKwOfHomeMonth()">
                     <option v-for="home in homes" :key="home" :value="home">{{ home }}</option>
                 </select>
             </div>
