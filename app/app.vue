@@ -1,7 +1,7 @@
 <template>
   <div>
-    <SplashScreen v-if="isFirstAccess" />
-    <NuxtLayout v-else>
+    <!-- <SplashScreen v-if="isFirstAccess" /> -->
+    <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
   </div>
@@ -9,7 +9,7 @@
 
 
 <script setup lang="ts">
-import SplashScreen from '@/components/SplashScreen.vue';
+// import SplashScreen from '@/components/SplashScreen.vue';
 
 const isFirstAccess = ref(true);
 onMounted(() => {
