@@ -21,7 +21,7 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
         </div>
-        <LoadDetailTable :is-loading="isLoading" :generated-load="generatedLoad ?? {} as GenerateLoad" :is-show-action="false"/>
+        <LoadDetailTable :is-loading="isLoading" :generated-load="generatedLoad!" :is-show-action="false"/>
         <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @open="handleOpenLink" />
     </div>
 </template>
@@ -29,7 +29,6 @@
 import FormHeader from '@/components/FormHeader.vue';
 import CopyLink from '@/components/load/CopyLink.vue';
 import LoadDetailTable from '@/components/loads/LoadDetailTable.vue';
-import type { GenerateLoad } from '@/models/generateLoad';
 import useLoadDetails from '@/composables/loads/useLoadDetails';
 
 definePageMeta({

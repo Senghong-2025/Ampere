@@ -1,6 +1,6 @@
 export default function useTelegramBot() {
   const TELEGRAM_BOT_TOKEN = '8285306955:AAF8r-aMASuu8maT9fEz78STbs0gEH93voU'; // @PowerSrasChorkBot
-  const TELEGRAM_CHAT_ID = "-4885871456";
+  const TELEGRAM_CHAT_ID = "-1002901889519";
   const sendMessageToGroup = async (message: string): Promise<void> => {
     if (!message) return;
 
