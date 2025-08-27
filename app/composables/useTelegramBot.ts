@@ -1,18 +1,17 @@
 export default function useTelegramBot() {
-  const TELEGRAM_BOT_TOKEN = '8285306955:AAF8r-aMASuu8maT9fEz78STbs0gEH93voU'; // @PowerSrasChorkBot
-  const TELEGRAM_CHAT_ID = "-1002901889519";
+  const config = useRuntimeConfig();
   const sendMessageToGroup = async (message: string): Promise<void> => {
     if (!message) return;
 
     console.log(message);
-    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const url = `https://api.telegram.org/bot${config.public.telegram.TELEGRAM_BOT_TOKEN}/sendMessage`;
 
     try {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          chat_id: TELEGRAM_CHAT_ID,
+          chat_id: config.public.telegram.TELEGRAM_CHAT_ID,
           text: message,
           parse_mode: 'HTML',
         }),

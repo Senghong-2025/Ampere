@@ -1,4 +1,3 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite"
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -6,7 +5,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
     public: {
-      TOKEN_KEY: process.env.TOKEN_KEY
+      TOKEN_KEY: process.env.TOKEN_KEY,
+      telegram: {
+        TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+        TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID
+      }
     }
   },
   modules: ['@nuxt/eslint', '@nuxt/icon', '@element-plus/nuxt'],
@@ -15,7 +18,7 @@ export default defineNuxtConfig({
       tailwindcss(),
     ]
   },
-   nitro: {
+  nitro: {
     prerender: {
       autoSubfolderIndex: false
     }
