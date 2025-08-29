@@ -11,10 +11,11 @@ interface IUpdateModel {
     isPaid: boolean;
     paidAmount: number;
     remark: string;
+    bankTransfer: number
 }
 const useLoadDetails = () => {
     const { $db } = useNuxtApp();
-    const { sendMessageToGroup } = useTelegramBot();
+    // const { sendMessageToGroup } = useTelegramBot();
     const today = new Date()
     const selectedDate = ref(
         `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`
@@ -52,8 +53,9 @@ const useLoadDetails = () => {
                         usageDifference: 0,
                         usageAmount: 0,
                         extraAmountByRoom: 0,
-                        totalAmount: 0
+                        totalAmount: 0,
                     };
+                    let remainingAmount = 0;
                     generatedLoad.value.data.forEach((val) => {
                         preTotal.roomNumber = 'Total' as unknown as number;
                         preTotal.currentMonthKW += val.currentMonthKW;
@@ -63,7 +65,9 @@ const useLoadDetails = () => {
                         preTotal.extraAmountByRoom += val.extraAmountByRoom;
                         preTotal.totalAmount += val.totalAmount;
                         preTotal.isPaid = generatedLoad.value?.data.every(item => item.isPaid);
+                        remainingAmount += val.isPaid ? 0 : val.totalAmount;
                     });
+                    preTotal.remark = `នៅខ្វះ: ${accountingWithoutRoundUp(remainingAmount)} ៛`;
                     totalLoadByMonth.value = new GenerateLoadData(preTotal);
                     generatedLoad.value.data = [
                         ...generatedLoad.value.data,
@@ -71,6 +75,7 @@ const useLoadDetails = () => {
                     ]
                     generateLoadForUpdate.value = doc.data() as IGenerateLoad;
                     generateLoadForUpdate.value.id = doc.id;
+                    generateLoadForUpdate.value.bankTransfer = 0;
                 });
             } else {
                 generatedLoad.value = new GenerateLoad({
@@ -80,6 +85,7 @@ const useLoadDetails = () => {
                     savingAmount: 0,
                     totalUsageAmount: 0,
                     extraAmountEachRoom: 0,
+                    bankTransfer: 0,
                     data: []
                 });
                 notifyHelper.info('No generated load found for the specified month and year.');
@@ -96,15 +102,18 @@ const useLoadDetails = () => {
         roomNumber: "",
         isPaid: false,
         paidAmount: 0,
-        remark: ""
+        remark: "",
+        bankTransfer: 0,
     });
     const updatedId = ref<string>("");
     const clonedUpdateData = ref<GenerateLoadData>();
-    const editLoad = (room: GenerateLoadData, id: string) => {
+    const editLoad = (load: GenerateLoadData, id: string) => {
         dialogVisible.value = true;
         updatedId.value = id;
-        clonedUpdateData.value = room;
-        Object.assign(updateModel, room);
+        clonedUpdateData.value = load;
+        const cloned = {...load};
+        // if(cloned.paidAmount) cloned.paidAmount = Number(accountingWithoutRoundUp(String(cloned.paidAmount), 2));
+        Object.assign(updateModel, cloned);
     };
 
     const totalAmountForPaid = computed(()=> clonedUpdateData.value?.totalAmount ?? 0);
@@ -131,7 +140,7 @@ const useLoadDetails = () => {
             const docRef = doc($db, "generatedLoad", updatedId.value);
             await updateDoc(docRef, { ...generateLoadForUpdate.value });
             await Promise.all([
-                sendMessageToGroup(`📢 <strong>ថ្លៃភ្លើងកុដិលេខ ${selectedHome.value} នៅបន្ទប់លេខ ${clonedUpdateData.value?.roomNumber}</strong>\n\n- ប្រើប្រាស់អស់: ${clonedUpdateData.value?.usageDifferenceForDisplay}\n- សរុបថ្លៃប្រើប្រាស់: ${clonedUpdateData.value?.totalAmountForDisplay}\n- បង់លុយចំនួន: ${accountingWithoutRoundUp(updateModel.paidAmount)} ៛\n- រួចរាល់?: ${updateModel.isPaid ? "បង់រួចរាល់ ✅" : "មិនទាន់គ្រប់ ⚠️"}\n- កំណត់សម្គាល់: ${updateModel.remark || "គ្មាន"}`),
+                // sendMessageToGroup(`📢 <strong>ថ្លៃភ្លើងកុដិលេខ ${selectedHome.value} នៅបន្ទប់លេខ ${clonedUpdateData.value?.roomNumber}</strong>\n\n- ប្រើប្រាស់អស់: ${clonedUpdateData.value?.usageDifferenceForDisplay}\n- សរុបថ្លៃប្រើប្រាស់: ${clonedUpdateData.value?.totalAmountForDisplay}\n- បង់លុយចំនួន: ${accountingWithoutRoundUp(updateModel.paidAmount)} ៛\n- រួចរាល់?: ${updateModel.isPaid ? "បង់រួចរាល់ ✅" : "មិនទាន់គ្រប់ ⚠️"}\n- កំណត់សម្គាល់: ${updateModel.remark || "គ្មាន"}`),
                 getGeneratedLoadByMonth()
             ]);
             notifyHelper.success("updated successfully.");
@@ -179,21 +188,6 @@ const useLoadDetails = () => {
             title: 'Total',
             displayFormat: 'right',
         }),
-        // createColumn({
-        //     key: 'isPaid',
-        //     title: 'Paid',
-        //     displayFormat: 'center',
-        // }),
-        // createColumn({
-        //     key: 'paidAmountForDisplay',
-        //     title: 'Paid Amount',
-        //     displayFormat: 'right',
-        // }),
-        // createColumn({
-        //     key: 'remark',
-        //     title: 'Remark',
-        //     displayFormat: 'left',
-        // }),
     ];
 
     const headerTitles = [

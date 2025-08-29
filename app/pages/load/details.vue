@@ -28,6 +28,12 @@
             :is-show-action="true"
             @edit-load="editLoad"
         />
+        <!-- <div class="w-full p-4">
+            <div class="input-form">
+                <label for="bankTransfer">Bank Transfer</label>
+                <input v-model="updateModel.bankTransfer" type="number">
+            </div>
+        </div> -->
         <el-dialog
             v-model="dialogVisible"
             title="Update Load Details"
@@ -55,7 +61,7 @@
 
                 <div class="flex w-full items-center">
                     <label for="paidAmount" class="w-[150px]">Paid Amount</label>
-                    <input @input="onPaidAmountInput" id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-auto">
+                    <input id="paidAmount" v-model="updateModel.paidAmount" type="number" class="w-auto" @input="onPaidAmountInput">
                 </div>
 
                 <div class="flex w-full items-center">

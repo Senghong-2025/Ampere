@@ -7,7 +7,8 @@ export interface IGenerateLoad {
     totalUsage: number;               // Total kW used this month (sum of differences)
     savingAmount: number;
     totalUsageAmount: number;     
-    extraAmountEachRoom: number;     
+    extraAmountEachRoom: number;
+    bankTransfer: number;     
     data: IGenerateLoadData[];        // Per-room breakdown
 }
 export class GenerateLoad implements IGenerateLoad {
@@ -18,6 +19,7 @@ export class GenerateLoad implements IGenerateLoad {
     savingAmount: number;
     totalUsageAmount: number;
     extraAmountEachRoom: number;
+    bankTransfer: number;
     data: GenerateLoadData[];
 
     constructor(data: IGenerateLoad) {
@@ -28,6 +30,7 @@ export class GenerateLoad implements IGenerateLoad {
         this.savingAmount = data.savingAmount;
         this.totalUsageAmount = data.totalUsageAmount;
         this.extraAmountEachRoom = data.extraAmountEachRoom;
+        this.bankTransfer = data.bankTransfer;
         this.data = data.data.length ? data.data.map(item => new GenerateLoadData(item)) : [];
     }
 }
