@@ -24,7 +24,7 @@
         </div>
         <LoadDetailTable
             :is-loading="isLoading" 
-            :generated-load="generatedLoad!"
+            :generated-load="generatedLoad"
             :is-show-action="true"
             @edit-load="editLoad"
         />

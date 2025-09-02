@@ -38,7 +38,7 @@
             <TheButton1 v-if="isShowPreview" name="Save" type="primary" :loading="isLoading(ENUM_LOADING.SAVE_FORM)" @click="onSave"/>
             <TheButton1 v-if="isShowPreview" name="Reset" type="secondary" @click="onReset"/>
         </div>
-        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading(ENUM_LOADING.GENERATE)" :generated-load="generateLoad!" :is-show-action="false" />
+        <LoadDetailTable v-if="isShowPreview" :is-loading="isLoading(ENUM_LOADING.GENERATE)" :generated-load="generateLoad" :is-show-action="false" />
     </div>
 </template>
 <script lang="ts" setup>

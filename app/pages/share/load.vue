@@ -21,7 +21,7 @@
                 <input id="date" v-model="selectedDate" type="month" class="w-full" @change="handleChange()">
             </div>
         </div>
-        <LoadDetailTable :is-loading="isLoading" :generated-load="generatedLoad!" :is-show-action="false"/>
+        <LoadDetailTable :is-loading="isLoading" :generated-load="generatedLoad" :is-show-action="false"/>
         <CopyLink :share-visible="shareVisible" :share-url="shareUrl" @close="shareVisible = false" @open="handleOpenLink" />
     </div>
 </template>

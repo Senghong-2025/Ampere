@@ -70,7 +70,7 @@
 import type { GenerateLoad, GenerateLoadData } from '~/models/generateLoad';
 
 const props = defineProps<{
-    generatedLoad: GenerateLoad,
+    generatedLoad?: GenerateLoad,
     isLoading: boolean
     isShowAction: boolean
 }>();
@@ -87,7 +87,9 @@ const getStatusClass = (room: GenerateLoadData) => {
 
 const route = useRoute();
 const isTotalRow = (index: number): boolean => {
-    if (route.path === "/load/generate") return false;
-    return props.generatedLoad.data && index === props.generatedLoad.data.length - 1;
+  return (
+    route.path !== "/load/generate" &&
+    props.generatedLoad?.data?.length === index + 1
+  );
 };
 </script>

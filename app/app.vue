@@ -13,6 +13,7 @@
 
 const isFirstAccess = ref(true);
 onMounted(() => {
+  if(!import.meta.client) return;
   if (sessionStorage.getItem('hasLoaded')) {
     isFirstAccess.value = false
   } else {
@@ -21,7 +22,6 @@ onMounted(() => {
       sessionStorage.setItem('hasLoaded', '1')
     }, 2000)
   }
-
 })
 
 useHead({
