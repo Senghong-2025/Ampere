@@ -19,9 +19,11 @@
                 </tr>
             </thead>
             <tbody>
-                <TableLoading v-if="isLoading" :row="10" :column="10" />
+                <TableLoading v-if="isLoading" :row="10" :column="isShowAction ? 11 : 10" />
                 <tr 
-                    v-for="(room, index) in generatedLoad.data" v-else :key="index"
+                    v-for="(room, index) in generatedLoad.data"
+                    v-else-if="!isLoading && generatedLoad?.data?.length"
+                    :key="index"
                     :class="{ 'bg-gray-100 font-semibold': isTotalRow(index) }">
                     <td align="center" class="!text-blue-500 font-semibold sticky left-0  bg-gray-100">
                         <span> {{ isTotalRow(index) ? 'Total' : room.roomNumber }}</span>
@@ -53,6 +55,11 @@
                             Edit
                         </button>
                         <span v-else> -- </span>
+                    </td>
+                </tr>
+                <tr v-else>
+                    <td :colspan="isShowAction ? 11 : 10" class="text-center">
+                        No record!
                     </td>
                 </tr>
             </tbody>

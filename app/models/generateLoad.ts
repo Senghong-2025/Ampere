@@ -6,9 +6,9 @@ export interface IGenerateLoad {
     homeId: number;                   // Home identifier
     totalUsage: number;               // Total kW used this month (sum of differences)
     savingAmount: number;
-    totalUsageAmount: number;     
+    totalUsageAmount: number;
     extraAmountEachRoom: number;
-    bankTransfer: number;     
+    bankTransfer: number;
     data: IGenerateLoadData[];        // Per-room breakdown
 }
 export class GenerateLoad implements IGenerateLoad {
@@ -103,23 +103,16 @@ export class GenerateLoadData implements IGenerateLoadData {
         return this.formatKw(this.usageDifference)
     }
 
-    get isPaidForDisplay():IFormatDisplay {
+    get isPaidForDisplay(): IFormatDisplay {
         if (this.isPaid) {
-            return {
-                text: "រួចរាល់",
-                color: "text-green-500"
-            };
-        } else if (this.paidAmount && this.paidAmount > 0) {
-            return {
-                text: "មិនទាន់គ្រប់",
-                color: "text-yellow-500"
-            };
-        } else {
-            return {
-                text: "មិនទាន់",
-                color: "text-red-500"
-            };
+            return { text: "រួចរាល់", color: "text-green-500" };
         }
+
+        if (this.paidAmount && this.paidAmount > 0) {
+            return { text: "មិនទាន់គ្រប់", color: "text-yellow-500" };
+        }
+
+        return { text: "មិនទាន់", color: "text-red-500" };
     }
 
     private formatCurrency(value: number): string {
