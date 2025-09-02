@@ -8,7 +8,7 @@ export interface IGenerateLoad {
     savingAmount: number;
     totalUsageAmount: number;
     extraAmountEachRoom: number;
-    bankTransfer: number;
+    bankTransfer?: number;
     data: IGenerateLoadData[];        // Per-room breakdown
 }
 export class GenerateLoad implements IGenerateLoad {
@@ -19,7 +19,7 @@ export class GenerateLoad implements IGenerateLoad {
     savingAmount: number;
     totalUsageAmount: number;
     extraAmountEachRoom: number;
-    bankTransfer: number;
+    bankTransfer?: number;
     data: GenerateLoadData[];
 
     constructor(data: IGenerateLoad) {

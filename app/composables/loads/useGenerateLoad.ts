@@ -10,13 +10,14 @@ const useGenerateLoad = () => {
     const { $db } = useNuxtApp();
     const { getLoadListByMonth, homes } = useLoad();
     const {startLoading, stopLoading, isLoading } = useLoading();
-    const model = reactive<Omit<IGenerateLoad, "id" | "data">>({
+    const model = reactive<Omit<IGenerateLoad, "id" | "data" | "">>({
         date: formatInputDate(new Date()),
         homeId: homes[0] ?? 0,
         totalUsage: 0,
         savingAmount: 0,
         totalUsageAmount: 0,
         extraAmountEachRoom: 0,
+        bankTransfer: 0,
     });
 
     const selectedDate = computed(() => model.date);
