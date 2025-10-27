@@ -1,75 +1,99 @@
-# Nuxt Minimal Starter
+# Ampere
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Ampere is a web application built with Nuxt.js for managing and monitoring electrical loads, room management, and user permissions. It includes features for tracking power consumption, managing rooms, and generating load reports.
 
-## Setup
+## Features
 
-Make sure to install dependencies:
+- 🔐 Authentication system with protected routes
+- 📊 Load management and monitoring
+- 🏠 Room management system
+- 📱 Responsive design with mobile support
+- 🔔 Real-time notifications
+- 📋 Load details and reporting
+- 🔗 Shareable load reports
+- 🤖 Telegram Bot integration
 
-```bash
-# npm
-npm install
+## Tech Stack
 
-# pnpm
-pnpm install
+- **Framework:** Nuxt.js 3
+- **Styling:** TailwindCSS
+- **Authentication:** Firebase
+- **State Management:** Nuxt Composables
+- **Icons & Assets:** Custom icon system
 
-# yarn
-yarn install
+## Project Structure
 
-# bun
-bun install
+```
+app/
+├── assets/          # Static assets and data models
+├── components/      # Reusable Vue components
+├── composables/     # Shared composition functions
+├── enums/          # TypeScript enumerations
+├── helpers/        # Utility functions
+├── layouts/        # Page layouts
+├── middleware/     # Navigation guards
+├── models/         # Data models
+├── pages/          # Application routes
+└── plugins/        # Plugin configurations
 ```
 
-## Development Server
+## Getting Started
 
-Start the development server on `http://localhost:3000`:
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Configure environment variables:
+   Create a `.env` file with necessary Firebase configurations
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Development
 
 ```bash
-# npm
+# Start development server
 npm run dev
 
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
+# Build for production
 npm run build
 
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
+# Preview production build
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Features Documentation
+
+### Load Management
+- Create, update, and delete load entries
+- Generate load reports
+- Track power consumption
+- Share load details via links
+
+### Room Management
+- Room creation and configuration
+- Room-specific load tracking
+- Multiple room support
+
+### User System
+- Authentication
+- Role-based permissions
+- User preferences
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is private and proprietary. All rights reserved.
+
+---
+Built with ❤️ using Nuxt.js
