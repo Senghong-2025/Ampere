@@ -5,22 +5,26 @@ function useNavbar() {
     {
       name: "Home",
       path: "/",
-      isEnabled: true
+      isEnabled: true,
+      activeTabs: ['/']
     },
     {
       name: "Room",
       path: "/room",
-      isEnabled: true
+      isEnabled: true,
+      activeTabs: ['/room']
     },
     {
       name: "Load",
-      path: "/load",
-      isEnabled: true
+      path: "/load/details",
+      isEnabled: true,
+      activeTabs: ['/load/details', '/load/create', '/load/room-load', '/load/generate']
     },
     {
       name: "Setting",
       path: "/setting",
-      isEnabled: true
+      isEnabled: true,
+      activeTabs: ['/setting']
     },
   ];
 
