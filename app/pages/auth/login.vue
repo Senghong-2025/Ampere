@@ -32,15 +32,25 @@ definePageMeta({
 const key = ref("");
 const isLoading = ref(false);
 const handleClick = async () => {
-    if (key.value !== config.public.TOKEN_KEY) {
-        notifyHelper.error("Invalid access key");
-        return;
-    }
-    isLoading.value = true;
-    sessionStorage.setItem("token", key.value);
-    await new Promise(resolve => setTimeout(resolve, 100));
-    navigateTo("/");
-    isLoading.value = false;
+  if (key.value !== config.public.TOKEN_KEY) {
+    notifyHelper.error("Invalid access key");
+    return;
+  }
+
+  isLoading.value = true;
+  const tokenCookie = useCookie('token', {
+    path: '/',
+    maxAge: 60 * 60 * 24, 
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+  });
+  tokenCookie.value = key.value;
+
+  // Small delay for UX
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  navigateTo('/');
+  isLoading.value = false;
 };
 const { shareRoutes } = useNavbar();
 </script>
