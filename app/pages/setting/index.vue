@@ -9,7 +9,7 @@
 
 const router = useRouter();
 const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    useCookie("token").value = null;
     router.replace("/auth/login");
 };
 </script>
