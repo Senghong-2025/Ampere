@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 
-const isFirstAccess = ref(true);
 const ready = ref(false);
 onMounted(() => {
   ready.value = true;

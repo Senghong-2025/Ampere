@@ -33,10 +33,7 @@
                     </option>
                 </select>
             </div>
-            <div class="input-form">
-                <label for="currentKW">Current (kW)</label>
-                <input id="currentKW" v-model="model.currentKW" type="number" name="currentKW" required>
-            </div>
+            <NumpadInput id="currentKW" v-model="model.currentKW" label="Current (KW)" />
             <div class="flex justify-center">
                 <TheButton1 name="Save" type="primary" :loading="isLoading" />
             </div>
