@@ -1,21 +1,23 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import type { UserCredential, AuthError } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
-
 interface RegisterData {
   email: string
   password: string
   name: string
 }
 
+interface RegisteredUser {
+  id: string
+  email: string
+  name: string
+  role: string
+}
+
 interface RegisterResponse {
   success: boolean
   error?: string
-  user?: UserCredential
+  user?: RegisteredUser
 }
 
 export default function useRegister() {
-  const { $auth, $db } = useNuxtApp()
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -24,29 +26,17 @@ export default function useRegister() {
     error.value = null
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        $auth,
-        data.email,
-        data.password
-      )
-
-      // Create a user document in Firestore
-      await setDoc(doc($db, 'users', userCredential.user.uid), {
-        email: data.email,
-        name: data.name,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        role: 'user' // Default role
+      const user = await $fetch<RegisteredUser>('/api/users/register', {
+        method: 'POST',
+        body: data,
       })
 
       return {
         success: true,
-        user: userCredential
+        user,
       }
     } catch (e) {
-      const firebaseError = e as AuthError
-      error.value = translateFirebaseError(firebaseError?.code || 'auth/unknown')
-      error.value = translateFirebaseError((e as { code?: string })?.code || 'auth/unknown')
+      error.value = translateRegistrationError(e)
       return {
         success: false,
         error: error.value
@@ -56,20 +46,15 @@ export default function useRegister() {
     }
   }
 
-  const translateFirebaseError = (code: string): string => {
-    switch (code) {
-      case 'auth/email-already-in-use':
-        return 'This email is already registered'
-      case 'auth/invalid-email':
-        return 'Invalid email address'
-      case 'auth/operation-not-allowed':
-        return 'Email/password accounts are not enabled'
-      case 'auth/weak-password':
-        return 'Password should be at least 6 characters'
-      default:
-        return 'An error occurred during registration'
+  const translateRegistrationError = (e: unknown): string => {
+    const response = e as { statusCode?: number, statusMessage?: string, data?: { statusMessage?: string } }
+    if (response.statusCode === 409) return 'This email is already registered'
+    if (response.statusCode === 400) return 'Invalid registration details'
+    if (response.data?.statusMessage) return response.data.statusMessage
+    if (response.statusMessage) return response.statusMessage
+
+    return 'An error occurred during registration'
     }
-  }
 
   return {
     register,

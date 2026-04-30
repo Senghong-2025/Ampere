@@ -1,10 +1,8 @@
 import type { ICreateLoadRequest, ILoadResponse } from "~/models/load";
 import { rooms } from "~/assets/data/room";
-import { addDoc, collection, doc, getDoc, getDocs, limit, query, updateDoc, where } from "firebase/firestore";
 import { formatInputDate, getMonthAndYearOnly, getStartAndEndOfMonth } from "~/helpers/dateTimeHelper";
 import notifyHelper from "~/helpers/notifyHelper";
 const useLoad = () => {
-    const { $db } = useNuxtApp();
     const homes = Array.from(new Set(rooms.map(room => room.homeId)));
     const floors = Array.from(new Set(rooms.map(room => room.floor)));
     const selectedHome = ref(homes[0]);
@@ -31,21 +29,27 @@ const useLoad = () => {
             createdOn: model.createdOn,
             modifiedOn: formatInputDate(new Date())
         };
-        const q = query(
-            collection($db, "load"),
-            where("roomNumber", "==", model.roomNumber),
-            where("homeId", "==", Number(selectedHome.value))
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => doc.data());
-        const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(item.createdOn) === getMonthAndYearOnly(new Date(model.createdOn))));
+        const { startDate, endDate } = getStartAndEndOfMonth(new Date(model.createdOn));
+        const data = await $fetch<ILoadResponse[]>('/api/loads', {
+            query: {
+                homeId: Number(selectedHome.value),
+                roomNumber: model.roomNumber,
+                startDate,
+                endDate,
+                limit: 1,
+            },
+        });
+        const existingValue = computed(() => data.find(item => item.roomNumber === model.roomNumber && getMonthAndYearOnly(new Date(item.createdOn)) === getMonthAndYearOnly(new Date(model.createdOn))));
         if (existingValue.value) {
             isLoading.value = false;
             notifyHelper.error("This already existing data");
             return;
         };
         try {
-            await addDoc(collection($db, "load"), request);
+            await $fetch('/api/loads', {
+                method: 'POST',
+                body: request,
+            });
             notifyHelper.success("Load created successfully.");
             model.roomNumber = 0;
             model.currentKW = 0;
@@ -63,20 +67,13 @@ const useLoad = () => {
         const selectedDate = computed(() => model.createdOn);
         const { startDate, endDate } = getStartAndEndOfMonth(isDefault ? new Date(selectedDate.value) : date ?? new Date());
         try {
-            const q = query(
-                collection($db, "load"),
-                where("homeId", "==", isDefault ? Number(selectedHome.value) : homeId),
-                where("createdOn", ">=", startDate),
-                where("createdOn", "<=", endDate),
-                limit(50)
-            );
-            const snapshot = await getDocs(q);
-            loadList.value = snapshot.docs.map(doc => {
-                const data = doc.data() as ILoadResponse;
-                return {
-                    ...data,
-                    id: doc.id ?? ''
-                };
+            loadList.value = await $fetch<ILoadResponse[]>('/api/loads', {
+                query: {
+                    homeId: isDefault ? Number(selectedHome.value) : homeId,
+                    startDate,
+                    endDate,
+                    limit: 50,
+                },
             });
             return loadList.value;
         } catch (error) {
@@ -89,18 +86,12 @@ const useLoad = () => {
     const getLoadById = async (id: string) => {
         isLoading.value = true;
         try {
-            const docRef = doc($db, "load", id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data() as ILoadResponse;
-                model.roomNumber = data.roomNumber;
-                model.currentKW = data.currentKW;
-                model.createdOn = data.createdOn;
-                model.modifiedOn = data.modifiedOn;
-                model.homeId = data.homeId;
-            } else {
-                console.error("No such document!");
-            }
+            const data = await $fetch<ILoadResponse>(`/api/loads/${id}`);
+            model.roomNumber = data.roomNumber;
+            model.currentKW = data.currentKW;
+            model.createdOn = data.createdOn;
+            model.modifiedOn = data.modifiedOn;
+            model.homeId = data.homeId;
         } catch (error) {
             console.error("Error fetching load by ID:", error);
         } finally {
@@ -111,8 +102,13 @@ const useLoad = () => {
     const updateLoad = async (id: string) => {
         isLoading.value = true;
         try {
-            const docRef = doc($db, "load", id);
-            await updateDoc(docRef, model);
+            await $fetch(`/api/loads/${id}`, {
+                method: 'PATCH',
+                body: {
+                    ...model,
+                    modifiedOn: formatInputDate(new Date()),
+                },
+            });
             notifyHelper.success("Load updated successfully.");
             navigateTo("/load/room-load");
         } catch (error) {

@@ -1,4 +1,3 @@
-import { collection, deleteDoc, doc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore';
 import { rooms } from '@/assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
@@ -14,7 +13,6 @@ interface IUpdateModel {
     bankTransfer: number
 }
 const useLoadDetails = () => {
-    const { $db } = useNuxtApp();
     // const { sendMessageToGroup } = useTelegramBot();
     const today = new Date()
     const selectedDate = ref(
@@ -31,19 +29,19 @@ const useLoadDetails = () => {
         isLoading.value = true;
         try {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
-            const q = query(
-                collection($db, "generatedLoad"),
-                where("homeId", "==", selectedHome.value ?? 0),
-                where("date", ">=", startDate),
-                where("date", "<=", endDate),
-                limit(1)
-            );
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                querySnapshot.docs.map((doc) => {
-                    generatedLoad.value = new GenerateLoad(doc.data() as IGenerateLoad);
+            const generatedLoads = await $fetch<IGenerateLoad[]>('/api/generated-loads', {
+                query: {
+                    homeId: selectedHome.value ?? 0,
+                    startDate,
+                    endDate,
+                    limit: 1,
+                },
+            });
+            if (generatedLoads.length) {
+                generatedLoads.map((load) => {
+                    generatedLoad.value = new GenerateLoad(load);
                     if (generatedLoad.value) {
-                        generatedLoad.value.id = doc.id;
+                        generatedLoad.value.id = load.id;
                     }
                     const preTotal: IGenerateLoadData = {
                         roomNumber: 0,
@@ -73,8 +71,8 @@ const useLoadDetails = () => {
                         ...generatedLoad.value.data,
                         totalLoadByMonth.value,
                     ]
-                    generateLoadForUpdate.value = doc.data() as IGenerateLoad;
-                    generateLoadForUpdate.value.id = doc.id;
+                    generateLoadForUpdate.value = load;
+                    generateLoadForUpdate.value.id = load.id;
                     generateLoadForUpdate.value.bankTransfer = 0;
                 });
             } else {
@@ -137,8 +135,10 @@ const useLoadDetails = () => {
                     v.remark = updateModel.remark;
                 }
             });
-            const docRef = doc($db, "generatedLoad", updatedId.value);
-            await updateDoc(docRef, { ...generateLoadForUpdate.value });
+            await $fetch(`/api/generated-loads/${updatedId.value}`, {
+                method: 'PATCH',
+                body: { ...generateLoadForUpdate.value },
+            });
             await Promise.all([
                 // sendMessageToGroup(`📢 <strong>ថ្លៃភ្លើងកុដិលេខ ${selectedHome.value} នៅបន្ទប់លេខ ${clonedUpdateData.value?.roomNumber}</strong>\n\n- ប្រើប្រាស់អស់: ${clonedUpdateData.value?.usageDifferenceForDisplay}\n- សរុបថ្លៃប្រើប្រាស់: ${clonedUpdateData.value?.totalAmountForDisplay}\n- បង់លុយចំនួន: ${accountingWithoutRoundUp(updateModel.paidAmount)} ៛\n- រួចរាល់?: ${updateModel.isPaid ? "បង់រួចរាល់ ✅" : "មិនទាន់គ្រប់ ⚠️"}\n- កំណត់សម្គាល់: ${updateModel.remark || "គ្មាន"}`),
                 getGeneratedLoadByMonth()
@@ -253,9 +253,9 @@ const useLoadDetails = () => {
     const onConfirmDelete = async () => {
         isLoading.value = true;
         try {
-            const docRef = doc($db, "generatedLoad", deleteLoadId.value);
-            console.log(docRef);
-            await deleteDoc(docRef);
+            await $fetch(`/api/generated-loads/${deleteLoadId.value}`, {
+                method: 'DELETE',
+            });
             notifyHelper.success("Deleted successfully.");
             isShowConfirm.value = false;
             await getGeneratedLoadByMonth();

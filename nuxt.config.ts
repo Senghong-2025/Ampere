@@ -4,6 +4,7 @@ export default defineNuxtConfig({
   css: ['~/assets/styles/main.css'],
   devtools: { enabled: true },
   runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL,
     public: {
       TOKEN_KEY: process.env.TOKEN_KEY,
       telegram: {

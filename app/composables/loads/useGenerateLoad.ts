@@ -1,13 +1,11 @@
 import { type IGenerateLoadData, GenerateLoad, GenerateLoadData, type IGenerateLoad } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import type { ILoadResponse } from '~/models/load';
 import useLoad from './useLoad';
 import { formatInputDate, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 import { ENUM_LOADING } from '~/enums/loading';
 
 const useGenerateLoad = () => {
-    const { $db } = useNuxtApp();
     const { getLoadListByMonth, homes } = useLoad();
     const {startLoading, stopLoading, isLoading } = useLoading();
     const model = reactive<Omit<IGenerateLoad, "id" | "data" | "">>({
@@ -109,20 +107,21 @@ const useGenerateLoad = () => {
         startLoading(ENUM_LOADING.SAVE_FORM);
         try {
             const { startDate, endDate } = getStartAndEndOfMonth(new Date(selectedDate.value))
-            const q = query(
-                collection($db, "generatedLoad"),
-                where("homeId", "==", model.homeId),
-                where("date", ">=", startDate),
-                where("date", "<=", endDate)
-            );
-
-            const snapshot = await getDocs(q);
-            const existingData = snapshot.docs.map(doc => doc.data());
+            const existingData = await $fetch<IGenerateLoad[]>('/api/generated-loads', {
+                query: {
+                    homeId: model.homeId,
+                    startDate,
+                    endDate,
+                },
+            });
             if (existingData.length > 0) {
                 notifyHelper.info("Load for this month and home already exists.");
                 return;
             }
-            await addDoc(collection($db, "generatedLoad"), generateLoadDataForCreate.value);
+            await $fetch('/api/generated-loads', {
+                method: 'POST',
+                body: generateLoadDataForCreate.value,
+            });
             notifyHelper.success("Generated load saved successfully.");
         } catch (error) {
             console.error("Error saving load:", error);
