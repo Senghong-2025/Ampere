@@ -12,8 +12,11 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "build:prod": "npx nuxi build --preset=cloudflare_pages",
-    "deploy:prod": "npx wrangler pages deploy dist/"
+    "build:worker": "nuxi build --preset=cloudflare_module",
+    "preview:worker": "npm run build:worker && wrangler dev --config wrangler.worker.toml",
+    "deploy:worker": "npm run build:worker && wrangler deploy --config wrangler.worker.toml",
+    "build:prod": "npm run build:worker",
+    "deploy:prod": "npm run deploy:worker"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
@@ -34,5 +37,8 @@
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",
     "xlsx-js-style": "^1.2.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.86.0"
   }
 }

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import * as XLSX from 'xlsx-js-style';
+import type { CellStyle, Range } from 'xlsx-js-style';
 
 interface ExcelColumn {
   key: string;
   title: string;
-  style?: XLSX.CellStyle;
+  style?: CellStyle;
 }
 
-export const exportHelper = (
+export const exportHelper = async (
   data: Record<string, any>[],
   columns: ExcelColumn[],
   fileName = 'export.xlsx',
@@ -15,14 +15,15 @@ export const exportHelper = (
   headerTitles: string[][] = [['Room List']],
   isFooter?: boolean,
   formatHorizontal?: (colIndex: number) => 'left' | 'center' | 'right'
-): void => {
+): Promise<void> => {
   if (!data || data.length === 0 || !columns || columns.length === 0) {
     console.warn('⚠️ No data available to export.');
     return;
   }
 
   try {
-    const headerStyle: XLSX.CellStyle = {
+    const XLSX = await import('xlsx-js-style');
+    const headerStyle: CellStyle = {
       font: { bold: true, color: { rgb: 'FFFFFF' } },
       fill: { fgColor: { rgb: '4F81BD' } },
       alignment: { horizontal: 'center', vertical: 'center' },
@@ -34,7 +35,7 @@ export const exportHelper = (
       },
     };
 
-    const titleStyle: XLSX.CellStyle = {
+    const titleStyle: CellStyle = {
       font: { bold: true, sz: 14, underline: true, color: { rgb: 'FFFFFF' } },
       alignment: { horizontal: 'center', vertical: 'center' },
       fill: { fgColor: { rgb: 'D4001D' } },
@@ -85,7 +86,7 @@ export const exportHelper = (
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    const merges: XLSX.Range[] = [];
+    const merges: Range[] = [];
     headerTitles.forEach((rowTitles, rowIndex) => {
       if (rowTitles.length > 0) {
         merges.push({
@@ -122,19 +123,10 @@ interface ColumnConfig {
   displayFormat?: 'left' | 'center' | 'right';
   format?: 'number' | 'currency' | 'date' | ((value: any) => string);
 }
-
-interface ColumnConfig {
-  key: string;
-  title: string;
-  bgColor?: string;
-  textColor?: string;
-  displayFormat?: 'left' | 'center' | 'right';
-  format?: 'number' | 'currency' | 'date' | ((value: any) => string);
-}
 export const createColumn = (config: ColumnConfig) => {
   const { key, title, bgColor, textColor, displayFormat = 'left', format } = config;
 
-  const style: XLSX.CellStyle = {
+  const style: CellStyle = {
     font: {
       color: textColor ? { rgb: textColor } : undefined,
       bold: textColor ? true : false,

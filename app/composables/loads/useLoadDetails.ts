@@ -1,7 +1,7 @@
 import { rooms } from '@/assets/data/room';
 import { GenerateLoad, GenerateLoadData, type IGenerateLoad, type IGenerateLoadData } from '~/models/generateLoad';
 import notifyHelper from '~/helpers/notifyHelper';
-import { createColumn, exportHelper } from '~/helpers/explortHelper';
+import { createColumn } from '~/helpers/explortHelper';
 import { getMonthAndYearOnly, getStartAndEndOfMonth } from '~/helpers/dateTimeHelper';
 import { accountingWithoutRoundUp } from '~/helpers/textFormatHelper';
 
@@ -200,7 +200,9 @@ const useLoadDetails = () => {
         return 'center';
     };
     async function handleExport() {
-        exportHelper(generatedLoad.value?.data ?? [], columns, `Generated_load_${selectedHome.value}_${getMonthAndYearOnly(new Date(selectedDate.value))}.xlsx`, 'Generated Load', headerTitles, true, formatHorizontal);
+        if (import.meta.server) return;
+        const { exportHelper } = await import('~/helpers/explortHelper');
+        await exportHelper(generatedLoad.value?.data ?? [], columns, `Generated_load_${selectedHome.value}_${getMonthAndYearOnly(new Date(selectedDate.value))}.xlsx`, 'Generated Load', headerTitles, true, formatHorizontal);
     }
 
     const router = useRouter();

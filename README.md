@@ -52,6 +52,26 @@ app/
    npm run dev
    ```
 
+## Deploy to Cloudflare Workers
+
+1. Log in to Cloudflare:
+   ```bash
+   npx wrangler login
+   ```
+
+2. Add production environment variables:
+   ```bash
+   npx wrangler secret put NUXT_DATABASE_URL
+   npx wrangler secret put NUXT_PUBLIC_TOKEN_KEY
+   npx wrangler secret put NUXT_PUBLIC_TELEGRAM_TELEGRAM_BOT_TOKEN
+   npx wrangler secret put NUXT_PUBLIC_TELEGRAM_TELEGRAM_CHAT_ID
+   ```
+
+3. Deploy the Worker:
+   ```bash
+   npm run deploy:prod
+   ```
+
 ## Features Documentation
 
 ### Load Management
