@@ -35,8 +35,6 @@ const useGenerateLoad = () => {
         switch (load.roomNumber) {
             case 1:
                 return amount * 3;
-            case 2:
-                return 0;
             default:
                 return amount;
         }
