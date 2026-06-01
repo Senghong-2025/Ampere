@@ -68,7 +68,7 @@ const useGenerateLoad = () => {
                     usageDifference: calUsageKw,
                     usageAmount: calUsageAmount,
                     extraAmountByRoom: convertExtraAmount(model.extraAmountEachRoom, item),
-                    totalAmount: model.extraAmountEachRoom + calUsageAmount,
+                    totalAmount:convertExtraAmount(model.extraAmountEachRoom, item) + calUsageAmount,
                     paidAmount: 0,
                     remark: "",
                     isPaid: false
