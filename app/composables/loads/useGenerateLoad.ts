@@ -32,9 +32,7 @@ const useGenerateLoad = () => {
         if (load.homeId !== 3) return amount;
         switch (load.roomNumber) {
             case 1:
-                return amount * 3;
-            case 2:
-                return 0;
+                return amount * 2;
             default:
                 return amount;
         }
