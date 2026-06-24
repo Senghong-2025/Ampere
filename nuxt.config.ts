@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: '',
     public: {
-      TOKEN_KEY: '',
+      TOKEN_KEY: import.meta.env.TOKEN_KEY || '',
       telegram: {
         TELEGRAM_BOT_TOKEN: '',
         TELEGRAM_CHAT_ID: ''

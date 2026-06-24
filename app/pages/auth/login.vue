@@ -32,8 +32,9 @@ definePageMeta({
 const key = ref("");
 const isLoading = ref(false);
 const handleClick = async () => {
+    console.log("Key:", key.value);
   if (key.value !== config.public.TOKEN_KEY) {
-    notifyHelper.error("Invalid access key");
+    notifyHelper.error("Invalid access key sdfsdf");
     return;
   }
 
